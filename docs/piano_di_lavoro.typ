@@ -120,9 +120,9 @@
 
 == Tutor indicato dal Soggetto Promotore (Soggetto Ospitante)
 
-- N/A
-- N/A
-- N/A
+- Prof.ssa Ombretta Gaggi
+- #link("mailto:gaggi@math.unipd.it")[gaggi\@math.unipd.it]
+- +39 049 8271356
 
 #pagebreak()
 
@@ -133,11 +133,11 @@
 
 == Contesto e motivazione
 
-Il lavoro di tesi si inserisce nel filone di ricerca inaugurato dalla tesi triennale di Ane-Marie Margarit (Università degli Studi di Padova, A.A. 2024--2025), che ha sviluppato un sistema predittivo del prezzo di Bitcoin basato su Sentiment Analysis con VADER e modelli di Machine Learning classici (Logistic Regression) applicati a post del social network Mastodon. Quel lavoro ha dimostrato la fattibilità dell'approccio identificandone chiaramente i limiti principali: soli 12.190 post disponibili, 55 settimane di overlap tra dati di sentiment e di prezzo, e un'accuratezza predittiva di circa il 45--47%, appena superiore alla casualità in un contesto binario.
+Il lavoro di tesi si inserisce nel filone di ricerca inaugurato dalla tesi triennale di Ane-Marie Margarit (Università degli Studi di Padova, A.A. 2024--2025), che ha sviluppato un sistema predittivo del prezzo di Bitcoin basato su Sentiment Analysis con VADER e modelli di Machine Learning classici (Logistic Regression) applicati a post del social network Mastodon. Quel lavoro ha dimostrato la fattibilità dell'approccio identificandone chiaramente i limiti principali: soli 12.190 post disponibili, 55 settimane di overlap tra dati di sentiment e di prezzo, e un'accuratezza predittiva di circa il 45--47%, appena inferiore alla casualità in un contesto binario, a dimostrazione di come il sistema non riesca a cogliere in modo affidabile la direzione del prezzo.
 
-La letteratura recente offre una prospettiva importante su questi risultati: predire la direzione del prezzo di Bitcoin su base settimanale è un problema estremamente difficile, e sistemi ben più sofisticati --- inclusi LSTM, LLM con memoria contestuale e framework multi-agente --- raramente superano il 52% di accuratezza su questo task specifico (Mudbari, 2025). Il vero contributo scientifico non risiede quindi nel "battere il mercato", bensì nel costruire un sistema più ricco e interpretabile che: (i) utilizzi una fonte dati più strutturata e meno rumorosa dei social media; (ii) sfrutti un LLM specifico per il dominio finanziario al posto di VADER; (iii) integri lo storico dei prezzi con indicatori tecnici consolidati; (iv) valuti l'utilità pratica tramite simulazione di una strategia di trading (_backtesting_).
+La letteratura recente offre una prospettiva importante su questi risultati: predire la direzione del prezzo di Bitcoin su base settimanale è un problema estremamente difficile, e sistemi ben più sofisticati, inclusi LSTM, LLM con memoria contestuale e framework multi-agente, raramente superano il 52% di accuratezza su questo task specifico (Mudbari, 2025). Raggiungere o superare tale soglia costituisce già un risultato di rilievo. Il vero contributo scientifico non risiede quindi nel "battere il mercato", bensì nel costruire un sistema più ricco, interpretabile e rigoroso che: (i) utilizzi una fonte dati più strutturata e meno rumorosa dei social media; (ii) sfrutti un LLM specifico per il dominio finanziario al posto di VADER; (iii) integri lo storico dei prezzi con indicatori tecnici consolidati; (iv) valuti l'utilità pratica tramite simulazione di una strategia di trading (_backtesting_); (v) esplori l'interpretabilità del modello, cercando di comprendere quali fattori influenzano maggiormente le variazioni di prezzo.
 
-La domanda di ricerca centrale è la seguente: *l'uso di FinBERT al posto di VADER, applicato a notizie finanziarie strutturate, migliora la predizione settimanale della direzione del prezzo di Bitcoin?* Rispondere a questa domanda in modo rigoroso e documentato costituisce il contributo principale della tesi.
+La domanda di ricerca centrale è la seguente: *in che misura l'adozione di modelli di Machine Learning avanzati e di tecniche di Sentiment Analysis basate su LLM specifici di dominio _Finance_, applicati a notizie finanziarie strutturate, migliora la qualità predittiva dell'andamento settimanale del prezzo di Bitcoin, e cosa ci dicono i modelli sui fattori che ne guidano le variazioni?* Rispondere a questa domanda in modo rigoroso e documentato costituisce il contributo principale della tesi.
 
 == Obiettivi del progetto
 
@@ -146,7 +146,7 @@ L'obiettivo centrale è sviluppare una *pipeline modulare* per la predizione del
 + *Sentiment testuale*: estratto da notizie finanziarie crypto (CoinDesk, CoinTelegraph) tramite feed RSS, utilizzando FinBERT come modello principale e VADER come baseline di confronto;
 + *Storico dei prezzi e indicatori tecnici*: medie mobili (SMA, EMA), RSI, MACD e volatilità storica, come feature complementari al sentiment.
 
-La valutazione finale avverrà tramite *backtesting*: simulazione di una strategia Long/Short confrontata con baseline standard (Buy and Hold, MACD, SMA crossover), calcolando rendimento cumulativo, Sharpe Ratio e Maximum Drawdown.
+La valutazione finale avverrà tramite *backtesting*: simulazione di una strategia Long/Short confrontata con baseline standard (Buy and Hold, MACD, SMA crossover), calcolando rendimento cumulativo, Sharpe Ratio e Maximum Drawdown. Un ulteriore asse di analisi sarà l'*interpretabilità*: attraverso tecniche come la feature importance e, ove possibile, metodi di spiegazione locale (es. SHAP), si cercherà di individuare quali segnali di sentiment e quali indicatori tecnici risultino più informativi per la predizione, contribuendo a una comprensione qualitativa dei meccanismi che sottendono le variazioni di prezzo di Bitcoin.
 
 == Descrizione del lavoro
 
@@ -166,7 +166,11 @@ FinBERT verrà confrontato quantitativamente con *VADER* come baseline lessicale
 
 === Modello predittivo
 
-Le feature estratte --- sentiment aggregato settimanale, variazione del sentiment rispetto alla settimana precedente, e indicatori tecnici di prezzo --- alimenteranno un classificatore binario (UP/DOWN del prezzo nella settimana successiva). Rispetto alla Logistic Regression della tesi triennale, verrà sperimentato *XGBoost*, già ampiamente validato in letteratura per questo task e addestrabile nei tempi disponibili su hardware ordinario. L'analisi dell'importanza delle feature (_feature importance_) permetterà di quantificare il contributo relativo del sentiment rispetto agli indicatori tecnici.
+Le feature estratte, sentiment aggregato settimanale, variazione del sentiment rispetto alla settimana precedente, e indicatori tecnici di prezzo, alimenteranno un classificatore binario (UP/DOWN del prezzo nella settimana successiva). Rispetto alla Logistic Regression della tesi triennale, verrà sperimentato *XGBoost*, già ampiamente validato in letteratura per questo task e addestrabile nei tempi disponibili su hardware ordinario. L'analisi dell'importanza delle feature (_feature importance_) permetterà di quantificare il contributo relativo del sentiment rispetto agli indicatori tecnici.
+
+=== Interpretabilità del modello
+
+Un aspetto esplicitamente esplorato sarà la *comprensione dei fattori predittivi*. Tramite feature importance globale (nativa in XGBoost) e, ove i tempi lo consentano, tecniche di spiegazione locale come *SHAP* (_SHapley Additive exPlanations_), si cercherà di rispondere a domande quali: il sentiment delle notizie contribuisce in modo significativo alla predizione, o è dominato dagli indicatori tecnici di prezzo? Esistono periodi o condizioni di mercato in cui il segnale testuale risulta particolarmente informativo? Questi risultati verranno discussi qualitativamente nella tesi, riconoscendo i limiti intrinseci dell'interpretabilità su serie temporali finanziarie.
 
 === Backtesting della strategia di trading
 
@@ -189,24 +193,23 @@ Tali metriche verranno confrontate con le seguenti baseline: *Buy and Hold*, *MA
 
 #align(center)[
   #table(
-    columns: (3cm, 9cm),
+    columns: (4cm, 11cm),
     align: (center + horizon, left + horizon),
     fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
     table.header(
       [*Durata in ore*], [*Descrizione attività*],
+      repeat: false
     ),
     [40],
     [Studio e rassegna della letteratura: analisi dei lavori recenti su sentiment analysis e predizione crypto, studio di FinBERT e delle metodologie di backtesting, revisione critica della tesi triennale di partenza.],
-    [50],
+    [60],
     [Raccolta e preparazione dei dati: raccolta notizie da feed RSS/API di CoinDesk e CoinTelegraph (almeno 2 anni di storico), download dello storico dei prezzi di Bitcoin, calcolo degli indicatori tecnici, pulizia e allineamento temporale dei dataset.],
-    [70],
-    [Sviluppo del modulo di Sentiment Analysis: integrazione di FinBERT via HuggingFace, gestione dell'inferenza a blocchi su Google Colab con salvataggio progressivo, confronto quantitativo con VADER, aggregazione settimanale dei punteggi di sentiment.],
     [80],
+    [Sviluppo del modulo di Sentiment Analysis: integrazione di FinBERT via HuggingFace, gestione dell'inferenza a blocchi su Google Colab con salvataggio progressivo, confronto quantitativo con VADER, aggregazione settimanale dei punteggi di sentiment.],
+    [90],
     [Sviluppo del modello predittivo e backtesting: ingegnerizzazione delle feature (sentiment e indicatori tecnici), addestramento e valutazione di XGBoost, analisi dell'importanza delle feature, implementazione della strategia Long/Short e confronto con le baseline Buy and Hold, MACD e SMA.],
-    [40],
-    [Analisi dei risultati, visualizzazione e scrittura sperimentale: interpretazione dei risultati, produzione di grafici e tabelle comparative, discussione dei limiti e dei lavori futuri.],
-    [40],
-    [Redazione della tesi e preparazione della presentazione finale.],
+    [50],
+    [Interpretabilità e analisi dei risultati: applicazione di tecniche di feature importance e SHAP, interpretazione dei fattori predittivi, produzione di grafici e tabelle comparative, discussione dei limiti e dei lavori futuri.],
     table.cell(colspan: 2, align: center)[*320 ore totali*],
   )
 ]
@@ -230,24 +233,29 @@ Le sigle precedentemente indicate saranno seguite da un numero, identificativo d
 
 #align(center)[
   #table(
-    columns: (2.5cm, 9cm),
+    columns: (3cm, 12cm),
     align: (center + horizon, left + horizon),
-    fill: (_, y) => if y == 0 or y == 5 or y == 8 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    fill: (_, y) => if y == 0 or y == 6 or y == 10 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
     table.header(
       table.cell(colspan: 2, align: center)[*Obbligatorio*],
+      repeat: false
     ),
     [*OB 1*],
     [Costruzione di un dataset di notizie finanziarie crypto (CoinDesk, CoinTelegraph) con copertura temporale di almeno 2 anni, allineato allo storico dei prezzi di Bitcoin e agli indicatori tecnici calcolati.],
     [*OB 2*],
     [Sviluppo di un modulo di Sentiment Analysis basato su FinBERT, con confronto quantitativo rispetto a VADER come baseline, documentando il miglioramento in termini di correlazione tra sentiment e variazione di prezzo.],
     [*OB 3*],
-    [Addestramento e valutazione di un modello predittivo XGBoost che integri feature di sentiment e indicatori tecnici di prezzo, con analisi dell'importanza delle feature e confronto rispetto alla Logistic Regression della tesi triennale di partenza.],
+    [Addestramento e valutazione di un modello predittivo XGBoost che integri feature di sentiment e indicatori tecnici di prezzo, con confronto rispetto alla Logistic Regression della tesi triennale di partenza, valutando la qualità predittiva complessiva.],
     [*OB 4*],
     [Implementazione di un sistema di backtesting che simuli una strategia Long/Short e la confronti con le baseline Buy and Hold, MACD e SMA, calcolando rendimento cumulativo, Sharpe Ratio e Maximum Drawdown.],
+    [*OB 5*],
+    [Analisi dell'interpretabilità del modello tramite feature importance globale (XGBoost) per identificare e discutere i fattori, testuali e tecnici, che maggiormente influenzano le variazioni di prezzo di Bitcoin.],
     table.cell(colspan: 2, align: center)[*Desiderabile*],
     [*DE 1*],
-    [Estensione del dataset con post di Mastodon relativi a Bitcoin, così da confrontare l'efficacia del segnale di sentiment da fonte social rispetto alle notizie strutturate.],
+    [Estensione dell'analisi di interpretabilità tramite tecniche di spiegazione locale (es. SHAP), per investigare se e quando il segnale di sentiment risulta particolarmente determinante nelle predizioni del modello.],
     [*DE 2*],
+    [Estensione del dataset con post di Mastodon relativi a Bitcoin, così da confrontare l'efficacia del segnale di sentiment da fonte social rispetto alle notizie strutturate.],
+    [*DE 3*],
     [Integrazione di un secondo modello di sentiment (Twitter-RoBERTa-Base) per un confronto a tre vie: VADER, FinBERT, RoBERTa.],
     table.cell(colspan: 2, align: center)[*Opzionale*],
     [*OP 1*],
