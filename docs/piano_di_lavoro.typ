@@ -112,13 +112,13 @@
 - #link("mailto:amerigo.vegliante@studenti.unipd.it")[amerigo.vegliante\@studenti.unipd.it]
 - +39 338 1551859
 
-== Tutor del CCS (Soggetto Promotore)
+== Soggetto Promotore
 
 - Prof. Nicolò Navarin
 - #link("mailto:nicolo.navarin@unipd.it")[nicolo.navarin\@unipd.it]
 - +39 049 8271384
 
-== Tutor indicato dal Soggetto Promotore (Soggetto Ospitante)
+== Tutor del CCS
 
 - Prof.ssa Ombretta Gaggi
 - #link("mailto:gaggi@math.unipd.it")[gaggi\@math.unipd.it]
