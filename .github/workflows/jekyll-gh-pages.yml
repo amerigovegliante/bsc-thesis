@@ -31,9 +31,13 @@ jobs:
           # Compila i file .typ dalla cartella esterna ./docs
           for file in ./docs/*.typ; do
             [ -e "$file" ] || continue
+
             filename=$(basename "$file" .typ)
-            echo "Compiling $file..."
-            typst compile "$file" "./site/docs/$filename.pdf"
+
+            if [ "$filename" != "log_template" ]; then
+                echo "Compiling $file..."
+                typst compile "$file" "./site/docs/$filename.pdf"
+            fi
           done
 
       - name: Setup Pages
