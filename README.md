@@ -1,2 +1,2 @@
-# thesis-bachelor
-Repository for my bachelor's thesis: includes source code, datasets, figures, drafts, bibliographic references, and final presentation. All materials are organized for easy access and versioning. Useful for review, sharing with supervisor, and tracking the evolution of experimental work.
+# Bachelor Thesis Documents
+Simple reporistory for all of the documents of my Bachelor's Thesis, here you can find the Work Plan, Weekly Logs of Work and, finally, the Thesis. 
