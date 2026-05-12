@@ -1,24 +1,22 @@
-// --- FUNZIONE 1: Impostazioni Generali del Documento ---
 #let project(body) = {
-  set document(author: "Mario Rossi", title: "Log Sviluppo Settimanale")
+  set document(author: "Amerigo Vegliante", title: "Log Sviluppo Settimana 1")
   
   set page(
     paper: "a4",
     margin: (x: 2cm, y: 2.5cm),
     footer: context {
-      set text(8pt, fill: gray)
+      set text(12pt, fill: black)
       line(length: 100%, stroke: 0.5pt + gray)
       align(center)[Pagina #counter(page).display()]
     }
   )
   
-  set text(font: "Linux Libertine", lang: "it", size: 11pt)
+  set text(font: "New Computer Modern", lang: "it", size: 11pt)
   set heading(numbering: "1.")
   
   body
 }
 
-// --- FUNZIONE 2: Layout della Settimana ---
 #let week_log(
   week_num, 
   date_range, 
@@ -27,13 +25,13 @@
 ) = {
   page(header: none, footer: none)[
     #align(center)[
-      #image("unipd.png", width: 8cm) 
+      #image("unipd.png", width: 10cm) 
       
-      #v(2cm)
-      #text(26pt, weight: "bold")[Settimana #week_num] \
-      #text(18pt, gray)[#date_range]
+      #text(26pt, weight: "bold")[Settimana #week_num]
+      #v(0.5cm)
+      #text(18pt, black)[#date_range]
       
-      #v(2cm)
+      #v(1.5cm)
       
       #grid(
         columns: (1fr),
@@ -47,7 +45,7 @@
       
       #align(bottom)[
         #line(length: 100%, stroke: 0.5pt)
-        #text(10pt, gray)[Diario di Bordo Tirocinio - Università degli Studi di Padova]
+        #text(12pt, black)[Diario di Bordo Settimanale del tirocinio di Vegliante Amerigo.]
       ]
     ]
   ]
@@ -59,7 +57,7 @@
     if tasks.len() > 0 {
       [*#name*]
       for task in tasks {
-        [- #task]
+        [+ #task]
       }
       v(0.5em)
     }
