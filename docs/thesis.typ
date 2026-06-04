@@ -1,3 +1,4 @@
+
 #set heading(numbering: "1.")
 #set text(font: "New Computer Modern")
 #set page(numbering: none)
@@ -59,6 +60,25 @@ Il _framework_ presenta tre limiti strutturali significativi se analizzato in un
 
 Il focus della presente tesi si inserisce per contrasto rispetto all'approccio di questo _paper_, proponendo un'architettura radicalmente più snella, quantitativa e mirata al contesto d'interesse. Invece di ricorrere a costosi dibattiti tra *LLM* generici, si opta per un singolo modello di estrazione del _sentiment_ specializzato combinato con un classificatore efficiente (XGBoost), addestrabile localmente in tempi ridotti. Inoltre, l'opacità descrittiva della decisione testuale viene qui superata mediante l'integrazione della Feature Importance e dei valori *SHAP*, fornendo un'interpretabilità matematica rigorosa del peso relativo tra metriche tecniche e _sentiment_ testuale sul mercato di _Bitcoin_.
 
+#figure(
+  caption: [Riepilogo metodologico, Xiao et al. (2024)],
+  table(
+    columns: (4.5cm, 8cm),
+    align: (left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Aspetto*], [*Dettaglio*]),
+    [*Asset target*], [Azioni tradizionali (es. AAPL); non crypto],
+    [*Modello NLP*], [LLM generici multi-agente (GPT-class), nessun modello a dizionario],
+    [*Tipo NLP*], [LLM (generativo, basato su Transformer)],
+    [*Modello predittivo*], [Agente _Trader_ LLM (sintesi testuale libera)],
+    [*Feature utilizzate*], [Report fondamentali, dati tecnici, sentiment, macro, tutto via prompt],
+    [*Granularità temporale*], [Non specificata (operatività intraday/giornaliera)],
+    [*Backtesting*], [Sì (rendimento cumulativo, Sharpe Ratio, Max Drawdown)],
+    [*Interpretabilità*], [Nessuna (black-box testuale)],
+    [*Costo computazionale*], [*Molto elevato*, decine di istanze LLM in parallelo, dipendenza da API commerciali],
+    [*Accuratezza dichiarata*], [Superiore alle baseline tradizionali (metriche finanziarie)],
+  )
+)
 
 == A. Hafid et al. (2024) - _Predicting Bitcoin Market Trends with Enhanced Technical Indicator Integration and Classification Models_
 
@@ -88,6 +108,25 @@ Nonostante l'elevata accuratezza statistica dichiarata, l'impianto metodologico 
 
 Il presente lavoro di tesi trae spunto dalle ottime conferme ricevute da questo _paper_ circa l'efficacia del classificatore _*XGBoost*_ rispetto alla _*Logistic Regression*_, ma ne estende e corregge l'approccio sotto due aspetti fondamentali. In primo luogo, l'orizzonte temporale viene ricalibrato su base settimanale coprendo un arco di almeno due anni: questa scelta mitiga il rumore dei micro-movimenti a 15 minuti, offrendo un segnale più robusto e spendibile per un'analisi di medio-lungo periodo. In secondo luogo, il _feature vector_ viene arricchito in modalità ibrida: ai tradizionali indicatori tecnici (confermati come ottime metriche di baseline) viene integrato il segnale testuale estratto tramite Sentiment Analysis con *LLM*.
 
+#figure(
+  caption: [Riepilogo metodologico, Hafid et al. (2024)],
+  table(
+    columns: (5cm, 8cm),
+    align: (left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Aspetto*], [*Dettaglio*]),
+    [*Asset target*], [Bitcoin (BTC)],
+    [*Modello NLP*], [Nessuno, solo indicatori tecnici di mercato],
+    [*Tipo NLP*], [Non applicabile],
+    [*Modello predittivo*], [XGBoost (classificatore binario Buy/Sell)],
+    [*Feature utilizzate*], [BB, ATR, CCI, Williams %R, CMF, OBV, MACD, A/D Line (k=8 via $chi^2$)],
+    [*Granularità temporale*], [15 minuti (1 anno di storico: 2021–2022)],
+    [*Backtesting*], [No (solo metriche statistiche: Accuracy, ROC)],
+    [*Interpretabilità*], [No (feature importance non discussa)],
+    [*Costo computazionale*], [*Basso*, XGBoost locale su dati tabulari],
+    [*Accuratezza dichiarata*], [92.4% (XGBoost) vs 91.01% (Logistic Regression)],
+  )
+)
 
 == N. Sapra et al. (2026) - _Unraveling environmental threads: Bitcoin prices, energy consumption, and crypto market volatility_
 
@@ -139,6 +178,26 @@ L'approccio addottato in questo _paper_, pur confermando la reattività del prez
 
 Il presente lavoro si aggancia alle tesi del presente _paper_ circa l'utilità dei dati _social_, ma ne corregge i limiti strutturali attraverso un disegno sperimentale comparativo e trasparente. In primo luogo, l'orizzonte temporale viene spostato su base settimanale, una granularità più adatta a stabilizzare il segnale macroeconomico rispetto alla volatilità frenetica dei _tweet_ giornalieri. In secondo luogo, per superare il problema del rumore isolato dei _social_, questo progetto introduce un approccio ibrido a due canali: il _sentiment_ estratto dai _social media_ viene messo a confronto diretto e combinato con quello di notizie finanziarie strutturate (CoinDesk, CoinTelegraph). Infine, l'opacità delle reti *LSTM* viene superata a favore del classificatore _*XGBoost*_.
 
+#figure(
+  caption: [Riepilogo metodologico, Manogna et al. (2023)],
+  table(
+    columns: (5cm, 8cm),
+    align: (left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Aspetto*], [*Dettaglio*]),
+    [*Asset target*], [Bitcoin (BTC)],
+    [*Modello NLP*], [Tecniche NLP non specificate (pipeline classica di classificazione del testo)],
+    [*Tipo NLP*], [NLP classico (non LLM, non dizionario, probabile TF-IDF o simile)],
+    [*Modello predittivo*], [LSTM e BiGRU (reti neurali ricorrenti)],
+    [*Feature utilizzate*], [Punteggi di sentiment da Twitter + storico prezzi (CoinMarketCap)],
+    [*Granularità temporale*], [Giornaliera],
+    [*Backtesting*], [No (solo metriche di classificazione)],
+    [*Interpretabilità*], [Nessuna (black-box neurale)],
+    [*Costo computazionale*], [*Medio-alto*, training LSTM/BiGRU richiede GPU],
+    [*Accuratezza dichiarata*], [Elevata precisione nelle fluttuazioni giornaliere (valore esatto non riportato)],
+  )
+)
+
 == H. Anand et al. (2024) - _An Empirical Study of Financial BERT Models for Sentiment Analysis and Cryptocurrency Price Correlation_
 
 Questo _paper_ presenta un'analisi empirica e comparativa sull'efficacia di diversi strumenti di _Sentiment Analysis_ – sia lessicali che basati su architetture _Transformer_ di _Deep Learning_ nel determinare la correlazione tra il _sentiment_ del pubblico e le fluttuazioni di prezzo delle criptovalute, con un focus verticale su Bitcoin. Gli autori mettono a confronto diretto quattro modelli speculativi: *VADER* e _*SenticNet*_ (approcci basati su dizionari), e _*FinBERT*_ e _*CryptoBERT*_ (modelli pre-addestrati basati su *BERT* e specializzati rispettivamente nel dominio finanziario e crittografico). Inoltre, il _paper_ illustra il _fine-tuning_ di un modello _*DistilBERT*_ per catturare le relazioni non lineari tra il testo e i trend di mercato, riportando un coefficiente di correlazione estremamente elevato, pari a 0.88, tra il _sentiment_ aggregato e i movimenti di prezzo.
@@ -155,6 +214,26 @@ Sebbene il contributo fornisca una validazione cruciale sull'uso di modelli _dom
 
 Il presente lavoro di tesi si configura come la naturale estensione ingegneristica e algoritmica dei risultati di questo _paper_. Presa per assodata l'eccellente correlazione dei modelli *BERT* finanziari dimostrata nel _paper_, questa tesi raccoglie la sfida e sposta il _framework_ sul piano predittivo ed economico. Il _sentiment_ ottimizzato (estratto e confrontato tramite *VADER* e _*FinBERT*_) non viene studiato in modo isolato, ma viene integrato in un vettore multivariato insieme agli indicatori tecnici e ai dati energetici del _mining_. Questo vettore alimenta direttamente un classificatore _*XGBoost*_ volto a produrre decisioni di _trading_ che, a differenza del _paper_ analizzato, vengono simulate e validate tramite un modulo di _backtesting_ finanziario per calcolare l'effettivo rendimento economico della strategia.
 
+#figure(
+  caption: [Riepilogo metodologico, Anand et al. (2024)],
+  table(
+    columns: (5cm, 8cm),
+    align: (left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Aspetto*], [*Dettaglio*]),
+    [*Asset target*], [Bitcoin (BTC) e altre criptovalute],
+    [*Modello NLP*], [VADER, SenticNet (dizionario); FinBERT, CryptoBERT, DistilBERT (Transformer)],
+    [*Tipo NLP*], [Ibrido: modelli a dizionario + LLM domain-specific (BERT-based)],
+    [*Modello predittivo*], [Nessuno, solo analisi correlazionale],
+    [*Feature utilizzate*], [Punteggi di sentiment aggregati da fonti testuali crypto],
+    [*Granularità temporale*], [Non specificata],
+    [*Backtesting*], [No],
+    [*Interpretabilità*], [No (correlazione statistica, non spiegazione causale)],
+    [*Costo computazionale*], [*Medio*, inferenza BERT/DistilBERT, fine-tuning locale],
+    [*Accuratezza dichiarata*], [Correlazione sentiment-prezzo: r = 0.88 (DistilBERT fine-tuned)],
+  )
+)
+
 == C. Kaur et al. (2025) - _Twitter Sentiment Analysis of Bitcoin Price Fluctuation with Machine Learning Techniques_
 
 === Disamina del _paper_
@@ -165,13 +244,33 @@ Questo studio analizza la capacità predittiva dei post di Twitter nel determina
 
 L'approccio metodologico di questo _paper_ presenta alcune limitazioni strutturali legate all'anzianità degli strumenti di *NLP* e all'orizzonte di validazione:
 
-- *Inadeguatezza del modello NLP lessicale (TextBlob)*: L'utilizzo di _*TextBlob*_ rappresenta un limite critico nel contesto finanziario. Essendo un dizionario lessicale generico, non è in grado di cogliere l'ironia, il contesto o il gergo specifico del mercato crittografico generando un segnale di _sentiment_ piatto o distorto.
+- *Inadeguatezza del *modello NLP* lessicale (TextBlob)*: L'utilizzo di _*TextBlob*_ rappresenta un limite critico nel contesto finanziario. Essendo un dizionario lessicale generico, non è in grado di cogliere l'ironia, il contesto o il gergo specifico del mercato crittografico generando un segnale di _sentiment_ piatto o distorto.
 
 - *Mancanza di indicatori tecnici complessi e simulazione economica*: I classificatori vengono addestrati unicamente sull'interazione tra _sentiment_ grezzo e prezzo di chiusura, tralasciando indicatori macro-strutturali o di analisi tecnica (*RSI*, *MACD*, _Bollinger Bands_). Inoltre, il lavoro si ferma alle metriche di classificazione pura (_Accuracy_, _Precision_), omettendo un ambiente di backtesting che verifichi l'effettiva profittabilità finanziaria dei segnali generati.
 
 === Conclusioni
 
 La presente tesi supera l'approccio di questo _paper_ introducendo un netto salto di qualità sia nell'estrazione del _sentiment_ che nella robustezza del modello predittivo. Al posto di algoritmi lessicali statici come TextBlob, questo framework adotta FinBERT e altri LLM moderni. Sul fronte predittivo, anziché affidarsi a classificatori standard isolati, si sfrutta la potenza di _*XGBoost*_ alimentato da un vettore di _feature_ ibrido e multivariato, che unisce al _sentiment_ avanzato sia gli indicatori tecnici che i dati energetici di rete. Infine, l'utilità del modello non viene stimata solo tramite metriche statistiche, ma viene validata sul campo simulando una reale strategia _Long/Short_ tramite un modulo di _Backtesting_ dedicato.
+
+#figure(
+  caption: [Riepilogo metodologico, Kaur et al. (2025)],
+  table(
+    columns: (5cm, 8cm),
+    align: (left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Aspetto*], [*Dettaglio*]),
+    [*Asset target*], [Bitcoin (BTC)],
+    [*Modello NLP*], [TextBlob (dizionario lessicale generico)],
+    [*Tipo NLP*], [Modello a dizionario (lessicale)],
+    [*Modello predittivo*], [SVM, Random Forest, Naive Bayes, KNN],
+    [*Feature utilizzate*], [Punteggi TextBlob + variazioni storiche prezzo BTC (Twitter)],
+    [*Granularità temporale*], [Giornaliera],
+    [*Backtesting*], [No (solo Accuracy e Precision)],
+    [*Interpretabilità*], [No],
+    [*Costo computazionale*], [*Molto basso*, classificatori classici su dati tabulari leggeri],
+    [*Accuratezza dichiarata*], [Random Forest migliore tra i classificatori (valore esatto non riportato)],
+  )
+)
 
 == K. Vijayakuamar et al. (2023) - _Impact of Elon Musk’s tweets on the price of Dogecoin using Sentiment Analysis_
 
@@ -191,6 +290,26 @@ Nonostante l'efficacia nel dimostrare il fenomeno della manipolazione o dell'inf
 
 La presente tesi raccoglie l'importante intuizione di questo _paper_ riguardante il peso dei flussi informativi, ma ne evolve l'impianto verso un modello scientificamente più solido e generalizzabile. Invece di monitorare l'effetto isolato di un singolo _account_ su una _meme coin_, questo progetto si focalizza sul Bitcoin, integrando il sentiment_ aggregato_ sia di canali _social_ distribuiti che di testate giornalistiche finanziarie verificate. L'accuratezza lessicale viene drasticamente migliorata sostituendo i dizionari statici con _*FinBERT*_ e altri *LLM*, garantendo la corretta interpretazione del contesto finanziario. Infine, la correlazione statistica viene qui tradotta in ingegneria delle _feature_, combinando il _sentiment_ con indicatori tecnici e metriche energetiche di _mining_ all'interno di un modello predittivo unificato e validato tramite simulazioni di _backtesting_.
 
+#figure(
+  caption: [Riepilogo metodologico, Vijayakumar et al. (2023)],
+  table(
+    columns: (5cm, 8cm),
+    align: (left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Aspetto*], [*Dettaglio*]),
+    [*Asset target*], [Dogecoin (DOGE), meme coin],
+    [*Modello NLP*], [TextBlob e VADER (dizionari lessicali)],
+    [*Tipo NLP*], [Modello a dizionario (lessicale)],
+    [*Modello predittivo*], [Nessuno, solo analisi di correlazione ex-post],
+    [*Feature utilizzate*], [Tweet di Elon Musk + serie storiche prezzo DOGE],
+    [*Granularità temporale*], [Non specificata (probabilmente giornaliera/intraday)],
+    [*Backtesting*], [No],
+    [*Interpretabilità*], [No],
+    [*Costo computazionale*], [*Molto basso*, dizionari statici senza training],
+    [*Accuratezza dichiarata*], [Non applicabile (studio correlazionale, non predittivo)],
+  )
+)
+
 == O. Sattarov et al. (2020) - _Forecasting Bitcoin Price Fluctuation by Twitter Sentiment Analysis_
 
 === Disamina del Paper
@@ -208,6 +327,58 @@ L'impianto metodologico del lavoro risente inevitabilmente dell'anzianità della
 === Conclusioni
 
 Il presente lavoro adotta le conclusioni di questo _paper_ come una fondamentale _baseline_ storica, ma ne rivoluziona l'architettura per superarne i limiti strutturali. Sul piano del _Natural Language Processing_, l'approccio lessicale rudimentale di *VADER* viene qui sostituito (e messo a confronto) con _*FinBERT*_, un modello basato su _Transformer_ pre-addestrato su termini finanziari in grado di comprendere il contesto semantico specifico. Sul piano predittivo, il vettore delle _feature_ viene espanso in modalità multivariata e ibrida, affiancando al _sentiment_ avanzato sia gli indicatori tecnici che le metriche energetiche di mining. Infine, la capacità predittiva non viene testata su modelli classici isolati come *SVM*, ma viene affidata all'algoritmo _*XGBoost*_ e validata economicamente tramite un modulo di _backtesting_ finanziario su base settimanale, garantendo una stabilità operativa assente nel _paper_ analizzato.
+
+#figure(
+  caption: [Riepilogo metodologico, Sattarov et al. (2020)],
+  table(
+    columns: (5cm, 8cm),
+    align: (left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Aspetto*], [*Dettaglio*]),
+    [*Asset target*], [Bitcoin (BTC)],
+    [*Modello NLP*], [VADER (dizionario lessicale, libreria NLTK)],
+    [*Tipo NLP*], [Modello a dizionario (lessicale)],
+    [*Modello predittivo*], [SVM e regressione lineare],
+    [*Feature utilizzate*], [Punteggi VADER aggregati giornalmente + prezzo di chiusura BTC],
+    [*Granularità temporale*], [Giornaliera],
+    [*Backtesting*], [No (solo Accuracy statistica)],
+    [*Interpretabilità*], [No],
+    [*Costo computazionale*], [*Molto basso*, SVM su feature bivariata],
+    [*Accuratezza dichiarata*], [62.48% nella classificazione della direzione del prezzo],
+  )
+)
+
+== Tabella Comparativa dei Paper con Modelli Predittivi
+
+La seguente tabella riassume e mette a confronto i principali paper con approccio predittivo sul valore di criptovalute analizzati in questa sezione, includendo la presente tesi come termine di paragone metodologico.
+
+#set table(inset: 6pt)
+#figure(
+  caption: [Confronto metodologico tra i paper predittivi su criptovalute],
+  table(
+    columns: (2.8cm, 1.8cm, 2.3cm, 1.9cm, 3.5cm, 2cm, 3cm),
+    align: center + horizon,
+    fill: (_, y) => if y == 0 { luma(180) } else if calc.odd(y) { luma(245) } else { white },
+    table.header(
+      [*Paper*], [*Asset*], [**Modello NLP**], [**Tipo NLP**], [*Classificatore*], [*Back-\ testing*], [*Interp.*],
+    ),
+    [Xiao\ (2024)],     [Azioni],    [LLM multi-agente\ (GPT-class)],   [LLM generativo],         [Agente LLM\ (testo libero)], [Sì],  [No],
+    [Hafid\ (2024)],    [BTC],       [Nessuno],                          [N/A],                    [XGBoost],                    [No],  [No],
+    [Manogna\ (2023)],  [BTC],       [NLP classico\ (non specif.)],      [Probabilm.\ TF-IDF],     [LSTM,\ BiGRU],               [No],  [No],
+    [Anand\ (2024)],    [BTC/Crypto],[VADER, SenticNet,\ FinBERT, CryptoBERT], [Dizionario\ + LLM], [Nessuno\ (correlaz.)],      [No],  [No],
+    [Kaur\ (2025)],     [BTC],       [TextBlob],                         [Dizionario],             [SVM, RF,\ NB, KNN],          [No],  [No],
+    [Vijayak.\ (2023)], [DOGE],      [TextBlob,\ VADER],                 [Dizionario],             [Nessuno\ (correlaz.)],       [No],  [No],
+    [Sattarov\ (2020)], [BTC],       [VADER],                            [Dizionario],             [SVM,\ Regressione],          [No],  [No],
+    table.cell(fill: luma(220))[*Questa\ tesi*],
+    table.cell(fill: luma(220))[*BTC*],
+    table.cell(fill: luma(220))[*?*],
+    table.cell(fill: luma(220))[*?*],
+    table.cell(fill: luma(220))[*XGBoost*],
+    table.cell(fill: luma(220))[*?*],
+    table.cell(fill: luma(220))[*?*],
+  )
+)
+#set table(inset: 9pt)
 
 ==  Gomes Jr. et al. (2024) - _Cryptoeconomic User Behavior in the Acute Stages of Geopolitical Conflict_
 
@@ -256,4 +427,3 @@ Il presente lavoro di tesi integra ed evolve le scoperte derivate da questo _pap
 
 - #link("a", "[12]") Kraken Learn, "Quanti Bitcoin esistono? Spiegazione della fornitura dei Bitcoin", Kraken.com, 2025 \ Disponibile a: #link("https://www.kraken.com/it/learn/how-many-bitcoin-are-there-bitcoin-supply-explained")
 = Glossario
-
