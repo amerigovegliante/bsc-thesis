@@ -40,6 +40,67 @@
 
 = Analisi della Letteratura
 
+
+== Fenomeni Correlati e Contesto Macroeconomico
+
+I seguenti contributi non propongono modelli predittivi diretti sul valore del Bitcoin, ma forniscono evidenze empiriche su dinamiche esterne, energetiche, informative e geopolitiche, che influenzano il mercato e che vengono integrate come contesto fondazionale nella presente tesi.
+
+== N. Sapra et al. (2026) - _Unraveling environmental threads: Bitcoin prices, energy consumption, and crypto market volatility_
+
+=== Disamina del _paper_
+
+Questo _paper_ esamina le relazioni dinamiche e non lineari tra il consumo di energia elettrica della rete Bitcoin, il prezzo dell'_asset_ e la volatilità complessiva del mercato delle criptovalute. Gli autori analizzano un _dataset_ di 1.761 osservazioni giornaliere (da marzo 2020 a gennaio 2025) combinando tecniche statistiche avanzate nei domini del tempo e della frequenza, come la _Biwavelet Coherence_ (*BWC*), la _Partial-Wavelet Transform Coherence_ (*PWC*) e i _test_ di causalità non lineare di Diks & Panchenko. L'indice utilizzato per stimare l'energia è il celebre *CBECI* (_Cambridge Bitcoin Electricity Consumption Index_). I risultati empirici rivelano un'importante asimmetria temporale: nel breve periodo, i movimenti di prezzo guidano il consumo energetico (poiché l'aumento dei prezzi rende il mining più redditizio, attirando nuovi nodi computazionali); nel lungo periodo, tuttavia, si verifica una causalità inversa, in cui il consumo di elettricità e i costi infrastrutturali strutturali fungono da driver e predittori per il valore intrinseco del Bitcoin.
+
+=== Limitazioni e Differenze di Applicazione
+
+Il lavoro si limita a presentare le relazioni di causalità tra il consumo di energia per "minare" Bitcoin e il valore stesso della criptovaluta senza porsi il problema della predizione e ignorando completamente altri componenti informative fondamentali come i vari indicatori tecnici di mercato visti prima. 
+
+=== Conclusioni
+
+Questo _paper_ si rivela comunque utile in quanto ci porta una evidenza statistica che intendiamo utilizzare come _feature_ predittiva concreta in modo da aggiungere al modello delle metriche legate al costo di produzione "industriale" del Bitcoin e non unicamente su metriche basate su metriche basate su dinamiche speculative a breve termine.
+
+== C. M. Liapis et al. (2021) - _A Multi-Method Survey on the Use of Sentiment Analysis in Multivariate Financial Time Series Forecasting_
+
+=== Disamina del _paper_
+
+Questo contributo si configura come una rassegna sistematica e "multi-metodo" della letteratura scientifica riguardante l'integrazione della _Sentiment Analysis_ all'interno di modelli predittivi multivariati per serie temporali finanziarie. Gli autori mappano un vasto ecosistema di pubblicazioni, classificando i lavori in base a tre pilastri fondamentali: la fonte dei dati testuali (notizie giornalistiche, Twitter, Reddit, _blog_), le tecniche di *NLP* (_Natural Language Processing_) impiegate per l'estrazione del _sentiment_ (metodi lessicali basati su dizionari rispetto ad approcci di _Machine Learning_ e _Deep Learning_) e, infine, gli algoritmi di previsione finanziaria utilizzati (dai modelli statistici lineari tradizionali come *ARIMA*, fino ai regressori non lineari e alle reti neurali *LSTM*). La survey dimostra empiricamente come l'inclusione del sentiment esogeno migliori quasi sistematicamente le metriche predittive rispetto ai modelli basati esclusivamente su dati storici di prezzo, evidenziando tuttavia una forte frammentazione metodologica nella letteratura.
+
+=== Limitazioni e Differenze di Applicazione
+
+Trattandosi di un _survey_, il lavoro presenta dei limiti intrinsechi legati alla sua natura descrittiva:
+
+- *Mancanza di un framework sperimentale unificato*: Il paper analizza e confronta i risultati di studi terzi, ciascuno condotto su _dataset_, archi temporali e mercati differenti. Di conseguenza, non fornisce un _benchmark_ volto a stabilire quale combinazione esatta di modello di _sentiment_ e classificatore sia la più efficiente a parità di condizioni di mercato.
+
+- *Focalizzazione pre-LLM e mercati tradizionali*: Essendo stato pubblicato alla fine del 2021, la panoramica dei modelli di *NLP* si ferma alle prime architetture *BERT* o a classificatori classici (*SVM*, _Naive Bayes_), non coprendo l'evoluzione recente dei modelli di dominio avanzati come _*FinBERT*_, *LLM* classici o l'uso di _framework_ multi-agente. Inoltre, la stragrande maggioranza della letteratura censita si focalizza sui mercati azionari tradizionali, lasciando parzialmente scoperto il settore ad alta volatilità delle criptovalute.
+
+=== Conclusioni
+
+Il valore di questa _survey_ nel contesto del presente progetto è di tipo fondazionale e giustificativo. La tesi sfrutta le conclusioni macroscopiche di questo paper, in particolare l'evidenza che i modelli ibridi multivariati (con prezzo e _sentiment_) superano quelli univariati, per legittimare la questa tesi.
+
+==  Gomes Jr. et al. (2024) - _Cryptoeconomic User Behavior in the Acute Stages of Geopolitical Conflict_
+
+=== Disamina del _paper_
+
+Questo _paper_ esamina l'impatto degli _shock_ geopolitici di vasta scala sul comportamento degli utenti all'interno delle _blockchain_ di Bitcoin ed Ethereum, focalizzandosi sulle fasi immediatamente precedenti e successive allo scoppio del conflitto russo-ucraino. Gli autori utilizzano un approccio basato su grafi dinamici variabili nel tempo (_time-varying graphs_) per modellare la rete delle transazioni _on-chain_ in un arco temporale critico di quattro settimane (due settimane prima e due settimane dopo l'inizio delle ostilità). L'obiettivo è analizzare la reattività della rete in una fase definita "acuta". I risultati empirici rivelano anomalie strutturali significative nel comportamento macroeconomico degli utenti: nella fase di pre-conflitto si registra un atteggiamento fortemente cauto e attendista (caratterizzato da una contrazione delle transazioni e da dinamiche di accumulazione), mentre nella fase post-conflitto si osserva un ritorno alla normalità nei volumi, ma con uno spostamento netto (shift) nelle traiettorie dei flussi di capitale e nella topologia della rete di trasferimento del valore.
+
+=== Limitazioni e Differenze di Applicazione
+
+Nonostante l'eccellente e rigorosa ricostruzione analitica delle dinamiche operate sui registri distribuiti, il lavoro evidenzia limiti sul piano della tempestività predittiva e algoritmica:
+
+- *Analisi ex-post e focalizzazione esclusivamente _on-chain_*: Lo studio ricostruisce i comportamenti in modo puramente retrospettivo. Inoltre, basandosi solo sulle transazioni registrate sulla _blockchain_, non correla questi mutamenti strutturali con i flussi informativi esterni in tempo reale, come il _sentiment_ espresso dai media finanziari o dai _social network_ nelle ore esatte dello scoppio della crisi.
+
+- *Assenza di finalità predittive e di moduli di trading*: Il _framework_ è di stampo prettamente analitico e sociologico-economico. Non traduce la categorizzazione del comportamento degli utenti in presenza di conflitti in feature quantitative spendibili da un algoritmo di _Machine Learning_ per anticipare la direzione del _trend_ o per automatizzare decisioni di portafoglio.
+
+Queste limitazioni sono prettamente dovute al fatto che il _paper_ non si occupa di informatica o _machine learning_ nello specifico ma di analisi sociologica-economica che si rivela comunque utile ai fini dello sviluppo del progetto di questa tesi.
+
+=== Conclusioni
+
+Il presente lavoro di tesi integra ed evolve le scoperte derivate da questo _paper_, convertendo un'evidenza analitica ex-post in un segnale predittivo operante in tempo reale. Il presupposto scientifico che il comportamento degli investitori di Bitcoin cambi in modo drastico durante i conflitti armati viene qui ingegnerizzato all'interno del vettore multivariato di _*XGBoost*_. Per superare il limite dell'analisi puramente _on-chain_, questo _framework_ sfrutta _*FinBERT*_ e altri *LLM* per intercettare istantaneamente il crollo del _sentiment_ e l'esplosione del panico geopolitico dai _feed_ di notizie globali e dai canali _social_ non appena l'evento si manifesta. In questo modo, l'algoritmo apprende la relazione matematica tra l'insorgere di uno _shock_ pubblico internazionale (catturato dal *NLP*) e le repentine fluttuazioni di prezzo di Bitcoin, testandone l'efficacia operativa e la protezione del capitale attraverso un modulo di _backtesting_ finanziario assente nel lavoro analizzato.
+
+== Modelli Predittivi sul Valore delle Criptovalute
+
+I seguenti paper propongono architetture di _machine learning_ o _deep learning_ per la predizione del valore di criptovalute, con o senza componente di _sentiment analysis_. Ciascun contributo è seguito da una tabella riassuntiva degli aspetti metodologici chiave; una tabella comparativa generale è riportata al termine del gruppo.
+
 == Y. Xiao et al. (2024) - _TradingAgents: Multi-Agents LLM Financial Trading Framework_
 
 === Disamina del _paper_
@@ -127,38 +188,6 @@ Il presente lavoro di tesi trae spunto dalle ottime conferme ricevute da questo 
     [*Accuratezza dichiarata*], [92.4% (XGBoost) vs 91.01% (Logistic Regression)],
   )
 )
-
-== N. Sapra et al. (2026) - _Unraveling environmental threads: Bitcoin prices, energy consumption, and crypto market volatility_
-
-=== Disamina del _paper_
-
-Questo _paper_ esamina le relazioni dinamiche e non lineari tra il consumo di energia elettrica della rete Bitcoin, il prezzo dell'_asset_ e la volatilità complessiva del mercato delle criptovalute. Gli autori analizzano un _dataset_ di 1.761 osservazioni giornaliere (da marzo 2020 a gennaio 2025) combinando tecniche statistiche avanzate nei domini del tempo e della frequenza, come la _Biwavelet Coherence_ (*BWC*), la _Partial-Wavelet Transform Coherence_ (*PWC*) e i _test_ di causalità non lineare di Diks & Panchenko. L'indice utilizzato per stimare l'energia è il celebre *CBECI* (_Cambridge Bitcoin Electricity Consumption Index_). I risultati empirici rivelano un'importante asimmetria temporale: nel breve periodo, i movimenti di prezzo guidano il consumo energetico (poiché l'aumento dei prezzi rende il mining più redditizio, attirando nuovi nodi computazionali); nel lungo periodo, tuttavia, si verifica una causalità inversa, in cui il consumo di elettricità e i costi infrastrutturali strutturali fungono da driver e predittori per il valore intrinseco del Bitcoin.
-
-=== Limitazioni e Differenze di Applicazione
-
-Il lavoro si limita a presentare le relazioni di causalità tra il consumo di energia per "minare" Bitcoin e il valore stesso della criptovaluta senza porsi il problema della predizione e ignorando completamente altri componenti informative fondamentali come i vari indicatori tecnici di mercato visti prima. 
-
-=== Conclusioni
-
-Questo _paper_ si rivela comunque utile in quanto ci porta una evidenza statistica che intendiamo utilizzare come _feature_ predittiva concreta in modo da aggiungere al modello delle metriche legate al costo di produzione "industriale" del Bitcoin e non unicamente su metriche basate su metriche basate su dinamiche speculative a breve termine.
-
-== C. M. Liapis et al. (2021) - _A Multi-Method Survey on the Use of Sentiment Analysis in Multivariate Financial Time Series Forecasting_
-
-=== Disamina del _paper_
-
-Questo contributo si configura come una rassegna sistematica e "multi-metodo" della letteratura scientifica riguardante l'integrazione della _Sentiment Analysis_ all'interno di modelli predittivi multivariati per serie temporali finanziarie. Gli autori mappano un vasto ecosistema di pubblicazioni, classificando i lavori in base a tre pilastri fondamentali: la fonte dei dati testuali (notizie giornalistiche, Twitter, Reddit, _blog_), le tecniche di *NLP* (_Natural Language Processing_) impiegate per l'estrazione del _sentiment_ (metodi lessicali basati su dizionari rispetto ad approcci di _Machine Learning_ e _Deep Learning_) e, infine, gli algoritmi di previsione finanziaria utilizzati (dai modelli statistici lineari tradizionali come *ARIMA*, fino ai regressori non lineari e alle reti neurali *LSTM*). La survey dimostra empiricamente come l'inclusione del sentiment esogeno migliori quasi sistematicamente le metriche predittive rispetto ai modelli basati esclusivamente su dati storici di prezzo, evidenziando tuttavia una forte frammentazione metodologica nella letteratura.
-
-=== Limitazioni e Differenze di Applicazione
-
-Trattandosi di un _survey_, il lavoro presenta dei limiti intrinsechi legati alla sua natura descrittiva:
-
-- *Mancanza di un framework sperimentale unificato*: Il paper analizza e confronta i risultati di studi terzi, ciascuno condotto su _dataset_, archi temporali e mercati differenti. Di conseguenza, non fornisce un _benchmark_ volto a stabilire quale combinazione esatta di modello di _sentiment_ e classificatore sia la più efficiente a parità di condizioni di mercato.
-
-- *Focalizzazione pre-LLM e mercati tradizionali*: Essendo stato pubblicato alla fine del 2021, la panoramica dei modelli di *NLP* si ferma alle prime architetture *BERT* o a classificatori classici (*SVM*, _Naive Bayes_), non coprendo l'evoluzione recente dei modelli di dominio avanzati come _*FinBERT*_, *LLM* classici o l'uso di _framework_ multi-agente. Inoltre, la stragrande maggioranza della letteratura censita si focalizza sui mercati azionari tradizionali, lasciando parzialmente scoperto il settore ad alta volatilità delle criptovalute.
-
-=== Conclusioni
-
-Il valore di questa _survey_ nel contesto del presente progetto è di tipo fondazionale e giustificativo. La tesi sfrutta le conclusioni macroscopiche di questo paper, in particolare l'evidenza che i modelli ibridi multivariati (con prezzo e _sentiment_) superano quelli univariati, per legittimare la questa tesi.
 
 == J. Manogna et al. (2023) - _Bitcoin Price Prediction Based on Sentiment Analysis_
 
@@ -356,11 +385,11 @@ La seguente tabella riassume e mette a confronto i principali paper con approcci
 #figure(
   caption: [Confronto metodologico tra i paper predittivi su criptovalute],
   table(
-    columns: (2.8cm, 1.8cm, 2.3cm, 1.9cm, 3.5cm, 2cm, 3cm),
+    columns: (2cm,1.8cm, 2cm, 2cm, 3.1cm, 2.8cm, 2cm),
     align: center + horizon,
     fill: (_, y) => if y == 0 { luma(180) } else if calc.odd(y) { luma(245) } else { white },
     table.header(
-      [*Paper*], [*Asset*], [**Modello NLP**], [**Tipo NLP**], [*Classificatore*], [*Back-\ testing*], [*Interp.*],
+      [*Paper*], [*Asset*], [**Modello NLP**], [**Tipo NLP**], [*Classificatore*], [*Backtesting*], [*Interp.*],
     ),
     [Xiao\ (2024)],     [Azioni],    [LLM multi-agente\ (GPT-class)],   [LLM generativo],         [Agente LLM\ (testo libero)], [Sì],  [No],
     [Hafid\ (2024)],    [BTC],       [Nessuno],                          [N/A],                    [XGBoost],                    [No],  [No],
@@ -380,25 +409,6 @@ La seguente tabella riassume e mette a confronto i principali paper con approcci
 )
 #set table(inset: 9pt)
 
-==  Gomes Jr. et al. (2024) - _Cryptoeconomic User Behavior in the Acute Stages of Geopolitical Conflict_
-
-=== Disamina del _paper_
-
-Questo _paper_ esamina l'impatto degli _shock_ geopolitici di vasta scala sul comportamento degli utenti all'interno delle _blockchain_ di Bitcoin ed Ethereum, focalizzandosi sulle fasi immediatamente precedenti e successive allo scoppio del conflitto russo-ucraino. Gli autori utilizzano un approccio basato su grafi dinamici variabili nel tempo (_time-varying graphs_) per modellare la rete delle transazioni _on-chain_ in un arco temporale critico di quattro settimane (due settimane prima e due settimane dopo l'inizio delle ostilità). L'obiettivo è analizzare la reattività della rete in una fase definita "acuta". I risultati empirici rivelano anomalie strutturali significative nel comportamento macroeconomico degli utenti: nella fase di pre-conflitto si registra un atteggiamento fortemente cauto e attendista (caratterizzato da una contrazione delle transazioni e da dinamiche di accumulazione), mentre nella fase post-conflitto si osserva un ritorno alla normalità nei volumi, ma con uno spostamento netto (shift) nelle traiettorie dei flussi di capitale e nella topologia della rete di trasferimento del valore.
-
-=== Limitazioni e Differenze di Applicazione
-
-Nonostante l'eccellente e rigorosa ricostruzione analitica delle dinamiche operate sui registri distribuiti, il lavoro evidenzia limiti sul piano della tempestività predittiva e algoritmica:
-
-- *Analisi ex-post e focalizzazione esclusivamente _on-chain_*: Lo studio ricostruisce i comportamenti in modo puramente retrospettivo. Inoltre, basandosi solo sulle transazioni registrate sulla _blockchain_, non correla questi mutamenti strutturali con i flussi informativi esterni in tempo reale, come il _sentiment_ espresso dai media finanziari o dai _social network_ nelle ore esatte dello scoppio della crisi.
-
-- *Assenza di finalità predittive e di moduli di trading*: Il _framework_ è di stampo prettamente analitico e sociologico-economico. Non traduce la categorizzazione del comportamento degli utenti in presenza di conflitti in feature quantitative spendibili da un algoritmo di _Machine Learning_ per anticipare la direzione del _trend_ o per automatizzare decisioni di portafoglio.
-
-Queste limitazioni sono prettamente dovute al fatto che il _paper_ non si occupa di informatica o _machine learning_ nello specifico ma di analisi sociologica-economica che si rivela comunque utile ai fini dello sviluppo del progetto di questa tesi.
-
-=== Conclusioni
-
-Il presente lavoro di tesi integra ed evolve le scoperte derivate da questo _paper_, convertendo un'evidenza analitica ex-post in un segnale predittivo operante in tempo reale. Il presupposto scientifico che il comportamento degli investitori di Bitcoin cambi in modo drastico durante i conflitti armati viene qui ingegnerizzato all'interno del vettore multivariato di _*XGBoost*_. Per superare il limite dell'analisi puramente _on-chain_, questo _framework_ sfrutta _*FinBERT*_ e altri *LLM* per intercettare istantaneamente il crollo del _sentiment_ e l'esplosione del panico geopolitico dai _feed_ di notizie globali e dai canali _social_ non appena l'evento si manifesta. In questo modo, l'algoritmo apprende la relazione matematica tra l'insorgere di uno _shock_ pubblico internazionale (catturato dal *NLP*) e le repentine fluttuazioni di prezzo di Bitcoin, testandone l'efficacia operativa e la protezione del capitale attraverso un modulo di _backtesting_ finanziario assente nel lavoro analizzato.
 
 = Bibliografia e Sitografia
 
