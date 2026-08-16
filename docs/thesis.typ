@@ -519,7 +519,7 @@ Le feature utilizzate dal modello sono organizzate in quattro famiglie omogenee 
     table.header([*Feature*], [*Descrizione*], [*Motivazione*]),
 
     [`sentiment_score_mean`], [Punteggio medio di sentiment settimanale], [Tono generale della discussione pubblica],
-    [`sentiment_score_weighted`], [Punteggio pesato per follower dell'autore], [Maggior peso agli autori con più reach],blocch
+    [`sentiment_score_weighted`], [Punteggio pesato per follower dell'autore], [Maggior peso agli autori con più reach],
     [`positive_pct` \ `negative_pct`], [Percentuale di post positivi o negativi], [Cattura la polarizzazione, non solo il tono medio],
     [`tweet_count`], [Volume di post analizzati], [Proxy dell'attenzione pubblica verso Bitcoin],
     [`sentiment_momentum`], [Differenza dal sentiment medio delle 4 settimane precedenti], [Cattura variazioni brusche di umore],
