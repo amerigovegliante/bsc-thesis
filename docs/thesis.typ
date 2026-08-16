@@ -1,4 +1,10 @@
-
+#show raw.where(block: true): it => pad(
+  block(
+    width: 100%,
+    fill: luma(245),
+    text(size: 8pt, it)
+  )
+)
 #set heading(numbering: "1.")
 #set text(font: "New Computer Modern")
 #set page(numbering: none)
@@ -14,7 +20,8 @@
   #text(
     22pt,
     weight: "bold",
-  )[Titolo provvisorio]
+  )[
+    Predizione dei movimenti di prezzo del Bitcoin attraverso il _Sentiment Analysis_ dei _Post Social_ ​]
 
 
   #text(22pt)[Tesi di Laurea Triennale]
@@ -38,8 +45,29 @@
 
 #set page(numbering: "1")
 
-= Analisi della Letteratura
+= Sommario
 
+Il presente documento descrive il lavoro svolto durante il periodo di stage/tesi, finalizzato allo sviluppo di una pipeline software per la predizione della direzione settimanale del prezzo di Bitcoin, mediante l'integrazione di tecniche di Natural Language Processing, Sentiment Analysis e modelli di Machine Learning.
+
+L'obiettivo della tesi è quello di costruire una pipeline strutturata e riproducibile che consenta, insieme all'estrazione automatica dei dati, di effettuare la pulizia, l'analisi e l'elaborazione di dati testuali provenienti dal social network Reddit, integrandoli con indicatori tecnici di mercato, metriche di blockchain di tipo energetico e un indice di sentiment di mercato (Fear & Greed Index), per la previsione della direzione del prezzo di Bitcoin su base settimanale.
+
+Attraverso l'integrazione di un modulo di estrazione dati, è stata realizzata una soluzione che consente di raccogliere automaticamente i dati testuali e di mercato, facilitando la creazione di un dataset aggiornato per l'addestramento del modello predittivo (XGBoost), unitamente a una metodologia di validazione temporale (walk-forward) e a una verifica statistica rigorosa dei risultati tramite intervalli di confidenza bootstrap.
+
+Le conclusioni, a differenza di quanto talvolta riportato in lavori analoghi senza una quantificazione esplicita dell'incertezza statistica, mostrano come, una volta corrette le criticità metodologiche individuate nella fase preliminare (overfitting nella selezione degli iperparametri, rischio di look-ahead bias nelle feature testuali), non emerga una correlazione tra il sentiment dei post e la direzione settimanale del prezzo di Bitcoin statisticamente distinguibile dal caso. Questo risultato è stato verificato anche con un ampliamento sostanziale del set di feature (indicatori macroeconomici come S&P 500, DXY, VIX, e metriche di volatilità/momentum multi-orizzonte), condotto con lo stesso rigore metodologico, senza ottenere miglioramenti misurabili: un indizio che il segnale assente non sia dovuto a un set di feature troppo povero. Questo risultato, pur negativo, è coerente con la letteratura sull'efficienza informativa dei mercati crypto su orizzonti brevi ed è reso metodologicamente solido proprio dalla pipeline di validazione sviluppata.
+
+L'esperienza ha creato le precondizioni per un ulteriore sviluppo del progetto, con l'obiettivo di rafforzare la capacità predittiva del sistema, integrando uno storico di dati più ampio, ulteriori fonti non ancora esplorate, feature nuove e un confronto sistematico con modelli a minore complessità.
+
+Il progetto è stato diviso in tre parti: la prima dedicata all'estrazione dei dati, garantendo l'accesso a informazioni aggiornate e utilizzando le Application Programming Interface (API) di Reddit, Yahoo Finance e dei principali indicatori on-chain/di sentiment di mercato; la seconda parte si è concentrata sull'effettivo sviluppo della pipeline, implementando le funzionalità di Natural Language Processing, Sentiment Analysis e del modello di Machine Learning, con particolare attenzione alla correttezza metodologica della fase di validazione (assenza di leakage temporale, quantificazione dell'incertezza statistica); infine, la terza parte ha riguardato l'analisi critica dei risultati ottenuti e la loro interpretazione attraverso metriche statistiche e il confronto con altri metodi, modelli e configurazioni di feature.
+
+#pagebreak()
+
+= Organizzazione del documento
+
+I successivi capitoli del documento sono organizzati nel seguente modo:
+- *Terzo Capitolo - Analisi della Letteratura*: Descrive il confronto e le motivazioni di determinate scelte tecnologiche e metodologiche nello sviluppo di questo modello predittivo.
+- *Quarto Capitolo - Metodologia*: Descrive le scelte tecnologiche e metodologiche prese a monte della letteratura studiata.
+
+= Analisi della Letteratura
 
 == Fenomeni Correlati e Contesto Macroeconomico
 
@@ -53,7 +81,7 @@ Questo _paper_ esamina le relazioni dinamiche e non lineari tra il consumo di en
 
 === Limitazioni e Differenze di Applicazione
 
-Il lavoro si limita a presentare le relazioni di causalità tra il consumo di energia per "minare" Bitcoin e il valore stesso della criptovaluta senza porsi il problema della predizione e ignorando completamente altri componenti informative fondamentali come i vari indicatori tecnici di mercato visti prima. 
+Il lavoro si limita a presentare le relazioni di causalità tra il consumo di energia per "minare" Bitcoin e il valore stesso della criptovaluta senza porsi il problema della predizione e ignorando completamente altri componenti informative fondamentali come i vari indicatori tecnici di mercato visti prima.
 
 === Conclusioni
 
@@ -77,7 +105,7 @@ Trattandosi di un _survey_, il lavoro presenta dei limiti intrinsechi legati all
 
 Il valore di questa _survey_ nel contesto del presente progetto è di tipo fondazionale e giustificativo. La tesi sfrutta le conclusioni macroscopiche di questo paper, in particolare l'evidenza che i modelli ibridi multivariati (con prezzo e _sentiment_) superano quelli univariati, per legittimare la questa tesi.
 
-==  Gomes Jr. et al. (2024) - _Cryptoeconomic User Behavior in the Acute Stages of Geopolitical Conflict_
+== Gomes Jr. et al. (2024) - _Cryptoeconomic User Behavior in the Acute Stages of Geopolitical Conflict_
 
 === Disamina del _paper_
 
@@ -95,7 +123,7 @@ Queste limitazioni sono prettamente dovute al fatto che il _paper_ non si occupa
 
 === Conclusioni
 
-Il presente lavoro di tesi integra ed evolve le scoperte derivate da questo _paper_, convertendo un'evidenza analitica ex-post in un segnale predittivo operante in tempo reale. Il presupposto scientifico che il comportamento degli investitori di Bitcoin cambi in modo drastico durante i conflitti armati viene qui ingegnerizzato all'interno del vettore multivariato di _*XGBoost*_. Per superare il limite dell'analisi puramente _on-chain_, questo _framework_ sfrutta _*FinBERT*_ e altri *LLM* per intercettare istantaneamente il crollo del _sentiment_ e l'esplosione del panico geopolitico dai _feed_ di notizie globali e dai canali _social_ non appena l'evento si manifesta. In questo modo, l'algoritmo apprende la relazione matematica tra l'insorgere di uno _shock_ pubblico internazionale (catturato dal *NLP*) e le repentine fluttuazioni di prezzo di Bitcoin, testandone l'efficacia operativa e la protezione del capitale attraverso un modulo di _backtesting_ finanziario assente nel lavoro analizzato.
+Il presente lavoro di tesi integra ed evolve le scoperte derivate da questo _paper_, convertendo un'evidenza analitica ex-post in un segnale predittivo operante in tempo reale. Il presupposto scientifico che il comportamento degli investitori di Bitcoin cambi in modo drastico durante i conflitti armati viene qui ingegnerizzato all'interno del vettore multivariato di _*XGBoost*_. Per superare il limite dell'analisi puramente _on-chain_, questo modello sfrutta l'*LLM* _*Gemini*_ per intercettare istantaneamente il crollo del _sentiment_ e l'esplosione del panico geopolitico dai _feed_ di notizie globali e dai canali _social_ non appena l'evento si manifesta. In questo modo, l'algoritmo apprende la relazione matematica tra l'insorgere di uno _shock_ pubblico internazionale (catturato dal *NLP*) e le repentine fluttuazioni di prezzo di Bitcoin, testandone l'efficacia operativa e la protezione del capitale attraverso un modulo di _backtesting_ finanziario assente nel lavoro analizzato.
 
 == Modelli Predittivi sul Valore delle Criptovalute
 
@@ -138,7 +166,7 @@ Il focus della presente tesi si inserisce per contrasto rispetto all'approccio d
     [*Interpretabilità*], [Nessuna (black-box testuale)],
     [*Costo computazionale*], [*Molto elevato*, decine di istanze LLM in parallelo, dipendenza da API commerciali],
     [*Accuratezza dichiarata*], [Superiore alle baseline tradizionali (metriche finanziarie)],
-  )
+  ),
 )
 
 == A. Hafid et al. (2024) - _Predicting Bitcoin Market Trends with Enhanced Technical Indicator Integration and Classification Models_
@@ -186,7 +214,7 @@ Il presente lavoro di tesi trae spunto dalle ottime conferme ricevute da questo 
     [*Interpretabilità*], [No (feature importance non discussa)],
     [*Costo computazionale*], [*Basso*, XGBoost locale su dati tabulari],
     [*Accuratezza dichiarata*], [92.4% (XGBoost) vs 91.01% (Logistic Regression)],
-  )
+  ),
 )
 
 == J. Manogna et al. (2023) - _Bitcoin Price Prediction Based on Sentiment Analysis_
@@ -224,7 +252,7 @@ Il presente lavoro si aggancia alle tesi del presente _paper_ circa l'utilità d
     [*Interpretabilità*], [Nessuna (black-box neurale)],
     [*Costo computazionale*], [*Medio-alto*, training LSTM/BiGRU richiede GPU],
     [*Accuratezza dichiarata*], [Elevata precisione nelle fluttuazioni giornaliere (valore esatto non riportato)],
-  )
+  ),
 )
 
 == H. Anand et al. (2024) - _An Empirical Study of Financial BERT Models for Sentiment Analysis and Cryptocurrency Price Correlation_
@@ -241,7 +269,7 @@ Sebbene il contributo fornisca una validazione cruciale sull'uso di modelli _dom
 
 === Conclusioni
 
-Il presente lavoro di tesi si configura come la naturale estensione ingegneristica e algoritmica dei risultati di questo _paper_. Presa per assodata l'eccellente correlazione dei modelli *BERT* finanziari dimostrata nel _paper_, questa tesi raccoglie la sfida e sposta il _framework_ sul piano predittivo ed economico. Il _sentiment_ ottimizzato (estratto e confrontato tramite *VADER* e _*FinBERT*_) non viene studiato in modo isolato, ma viene integrato in un vettore multivariato insieme agli indicatori tecnici e ai dati energetici del _mining_. Questo vettore alimenta direttamente un classificatore _*XGBoost*_ volto a produrre decisioni di _trading_ che, a differenza del _paper_ analizzato, vengono simulate e validate tramite un modulo di _backtesting_ finanziario per calcolare l'effettivo rendimento economico della strategia.
+Il presente lavoro di tesi si configura come la naturale estensione ingegneristica e algoritmica dei risultati di questo _paper_. Presa per assodata l'eccellente correlazione dei modelli *BERT* finanziari dimostrata nel _paper_, questa tesi raccoglie la sfida e sposta il _framework_ sul piano predittivo ed economico. Il _sentiment_ ottimizzato (estratto e confrontato tramite _*Gemini*_) non viene studiato in modo isolato, ma viene integrato in un vettore multivariato insieme agli indicatori tecnici e ai dati energetici del _mining_. Questo vettore alimenta direttamente un classificatore _*XGBoost*_ volto a produrre decisioni di _trading_ che, a differenza del _paper_ analizzato, vengono simulate e validate tramite un modulo di _backtesting_ finanziario per calcolare l'effettivo rendimento economico della strategia.
 
 #figure(
   caption: [Riepilogo metodologico, Anand et al. (2024)],
@@ -260,7 +288,7 @@ Il presente lavoro di tesi si configura come la naturale estensione ingegneristi
     [*Interpretabilità*], [No (correlazione statistica, non spiegazione causale)],
     [*Costo computazionale*], [*Medio*, inferenza BERT/DistilBERT, fine-tuning locale],
     [*Accuratezza dichiarata*], [Correlazione sentiment-prezzo: r = 0.88 (DistilBERT fine-tuned)],
-  )
+  ),
 )
 
 == C. Kaur et al. (2025) - _Twitter Sentiment Analysis of Bitcoin Price Fluctuation with Machine Learning Techniques_
@@ -279,7 +307,7 @@ L'approccio metodologico di questo _paper_ presenta alcune limitazioni struttura
 
 === Conclusioni
 
-La presente tesi supera l'approccio di questo _paper_ introducendo un netto salto di qualità sia nell'estrazione del _sentiment_ che nella robustezza del modello predittivo. Al posto di algoritmi lessicali statici come TextBlob, questo framework adotta FinBERT e altri LLM moderni. Sul fronte predittivo, anziché affidarsi a classificatori standard isolati, si sfrutta la potenza di _*XGBoost*_ alimentato da un vettore di _feature_ ibrido e multivariato, che unisce al _sentiment_ avanzato sia gli indicatori tecnici che i dati energetici di rete. Infine, l'utilità del modello non viene stimata solo tramite metriche statistiche, ma viene validata sul campo simulando una reale strategia _Long/Short_ tramite un modulo di _Backtesting_ dedicato.
+La presente tesi supera l'approccio di questo _paper_ introducendo un netto salto di qualità sia nell'estrazione del _sentiment_ che nella robustezza del modello predittivo. Al posto di algoritmi lessicali statici come TextBlob, questo modello adotta un *LLM* moderno della gamma *Google Gemini*. Sul fronte predittivo, anziché affidarsi a classificatori standard isolati, si sfrutta la potenza di _*XGBoost*_ alimentato da un vettore di _feature_ ibrido e multivariato, che unisce al _sentiment_ avanzato sia gli indicatori tecnici che i dati energetici di rete. Infine, l'utilità del modello non viene stimata solo tramite metriche statistiche, ma viene validata sul campo simulando una reale strategia _Long/Short_ tramite un modulo di _Backtesting_ dedicato.
 
 #figure(
   caption: [Riepilogo metodologico, Kaur et al. (2025)],
@@ -298,7 +326,7 @@ La presente tesi supera l'approccio di questo _paper_ introducendo un netto salt
     [*Interpretabilità*], [No],
     [*Costo computazionale*], [*Molto basso*, classificatori classici su dati tabulari leggeri],
     [*Accuratezza dichiarata*], [Random Forest migliore tra i classificatori (valore esatto non riportato)],
-  )
+  ),
 )
 
 == K. Vijayakuamar et al. (2023) - _Impact of Elon Musk’s tweets on the price of Dogecoin using Sentiment Analysis_
@@ -317,7 +345,7 @@ Nonostante l'efficacia nel dimostrare il fenomeno della manipolazione o dell'inf
 
 === Conclusioni
 
-La presente tesi raccoglie l'importante intuizione di questo _paper_ riguardante il peso dei flussi informativi, ma ne evolve l'impianto verso un modello scientificamente più solido e generalizzabile. Invece di monitorare l'effetto isolato di un singolo _account_ su una _meme coin_, questo progetto si focalizza sul Bitcoin, integrando il sentiment_ aggregato_ sia di canali _social_ distribuiti che di testate giornalistiche finanziarie verificate. L'accuratezza lessicale viene drasticamente migliorata sostituendo i dizionari statici con _*FinBERT*_ e altri *LLM*, garantendo la corretta interpretazione del contesto finanziario. Infine, la correlazione statistica viene qui tradotta in ingegneria delle _feature_, combinando il _sentiment_ con indicatori tecnici e metriche energetiche di _mining_ all'interno di un modello predittivo unificato e validato tramite simulazioni di _backtesting_.
+La presente tesi raccoglie l'importante intuizione di questo _paper_ riguardante il peso dei flussi informativi, ma ne evolve l'impianto verso un modello scientificamente più solido e generalizzabile. Invece di monitorare l'effetto isolato di un singolo _account_ su una _meme coin_, questo progetto si focalizza sul Bitcoin, integrando il sentiment_ aggregato_ sia di canali _social_ distribuiti che di testate giornalistiche finanziarie verificate. L'accuratezza lessicale viene drasticamente migliorata sostituendo i dizionari statici con *LLM*, garantendo la corretta interpretazione del contesto finanziario. Infine, la correlazione statistica viene qui tradotta in ingegneria delle _feature_, combinando il _sentiment_ con indicatori tecnici e metriche energetiche di _mining_ all'interno di un modello predittivo unificato e validato tramite simulazioni di _backtesting_.
 
 #figure(
   caption: [Riepilogo metodologico, Vijayakumar et al. (2023)],
@@ -336,7 +364,7 @@ La presente tesi raccoglie l'importante intuizione di questo _paper_ riguardante
     [*Interpretabilità*], [No],
     [*Costo computazionale*], [*Molto basso*, dizionari statici senza training],
     [*Accuratezza dichiarata*], [Non applicabile (studio correlazionale, non predittivo)],
-  )
+  ),
 )
 
 == O. Sattarov et al. (2020) - _Forecasting Bitcoin Price Fluctuation by Twitter Sentiment Analysis_
@@ -355,7 +383,7 @@ L'impianto metodologico del lavoro risente inevitabilmente dell'anzianità della
 
 === Conclusioni
 
-Il presente lavoro adotta le conclusioni di questo _paper_ come una fondamentale _baseline_ storica, ma ne rivoluziona l'architettura per superarne i limiti strutturali. Sul piano del _Natural Language Processing_, l'approccio lessicale rudimentale di *VADER* viene qui sostituito (e messo a confronto) con _*FinBERT*_, un modello basato su _Transformer_ pre-addestrato su termini finanziari in grado di comprendere il contesto semantico specifico. Sul piano predittivo, il vettore delle _feature_ viene espanso in modalità multivariata e ibrida, affiancando al _sentiment_ avanzato sia gli indicatori tecnici che le metriche energetiche di mining. Infine, la capacità predittiva non viene testata su modelli classici isolati come *SVM*, ma viene affidata all'algoritmo _*XGBoost*_ e validata economicamente tramite un modulo di _backtesting_ finanziario su base settimanale, garantendo una stabilità operativa assente nel _paper_ analizzato.
+Il presente lavoro adotta le conclusioni di questo _paper_ come una fondamentale _baseline_ storica, ma ne rivoluziona l'architettura per superarne i limiti strutturali. Sul piano del _Natural Language Processing_, l'approccio lessicale rudimentale di *VADER* viene qui sostituito (e messo a confronto) con l'*LLM* di _*Gemini*_. Sul piano predittivo, il vettore delle _feature_ viene espanso in modalità multivariata e ibrida, affiancando al _sentiment_ avanzato sia gli indicatori tecnici che le metriche energetiche di mining. Infine, la capacità predittiva non viene testata su modelli classici isolati come *SVM*, ma viene affidata all'algoritmo _*XGBoost*_ e validata economicamente tramite un modulo di _backtesting_ finanziario su base settimanale, garantendo una stabilità operativa assente nel _paper_ analizzato.
 
 #figure(
   caption: [Riepilogo metodologico, Sattarov et al. (2020)],
@@ -374,7 +402,7 @@ Il presente lavoro adotta le conclusioni di questo _paper_ come una fondamentale
     [*Interpretabilità*], [No],
     [*Costo computazionale*], [*Molto basso*, SVM su feature bivariata],
     [*Accuratezza dichiarata*], [62.48% nella classificazione della direzione del prezzo],
-  )
+  ),
 )
 
 == Tabella Comparativa dei Paper con Modelli Predittivi
@@ -385,30 +413,661 @@ La seguente tabella riassume e mette a confronto i principali paper con approcci
 #figure(
   caption: [Confronto metodologico tra i paper predittivi su criptovalute],
   table(
-    columns: (2cm,1.8cm, 2cm, 2cm, 3.1cm, 2.8cm, 2cm),
+    columns: (2cm, 1.8cm, 2.5cm, 2cm, 3.1cm, 2.8cm, 2cm),
     align: center + horizon,
     fill: (_, y) => if y == 0 { luma(180) } else if calc.odd(y) { luma(245) } else { white },
-    table.header(
-      [*Paper*], [*Asset*], [**Modello NLP**], [**Tipo NLP**], [*Classificatore*], [*Backtesting*], [*Interp.*],
-    ),
-    [Xiao\ (2024)],     [Azioni],    [LLM multi-agente\ (GPT-class)],   [LLM generativo],         [Agente LLM\ (testo libero)], [Sì],  [No],
-    [Hafid\ (2024)],    [BTC],       [Nessuno],                          [N/A],                    [XGBoost],                    [No],  [No],
-    [Manogna\ (2023)],  [BTC],       [NLP classico\ (non specif.)],      [Probabilm.\ TF-IDF],     [LSTM,\ BiGRU],               [No],  [No],
-    [Anand\ (2024)],    [BTC/Crypto],[VADER, SenticNet,\ FinBERT, CryptoBERT], [Dizionario\ + LLM], [Nessuno\ (correlaz.)],      [No],  [No],
-    [Kaur\ (2025)],     [BTC],       [TextBlob],                         [Dizionario],             [SVM, RF,\ NB, KNN],          [No],  [No],
-    [Vijayak.\ (2023)], [DOGE],      [TextBlob,\ VADER],                 [Dizionario],             [Nessuno\ (correlaz.)],       [No],  [No],
-    [Sattarov\ (2020)], [BTC],       [VADER],                            [Dizionario],             [SVM,\ Regressione],          [No],  [No],
+    table.header([*Paper*], [*Asset*], [*Modello NLP*], [*Tipo NLP*], [*Classificatore*], [*Backtesting*], [*Interp.*]),
+    [Xiao\ (2024)], [Azioni], [LLM multi-agente\ (GPT-class)], [LLM], [Agente LLM\ (testo libero)], [Sì], [No],
+    [Hafid\ (2024)], [BTC], [Nessuno], [N/A], [XGBoost], [No], [No],
+    [Manogna\ (2023)], [BTC], [NLP classico\ (non specif.)], [Probabilm.\ TF-IDF], [LSTM,\ BiGRU], [No], [No],
+    [Anand\ (2024)],
+    [BTC/Crypto],
+    [VADER, SenticNet,\ FinBERT, CryptoBERT],
+    [Dizionario\ + LLM],
+    [Nessuno\ (correlaz.)],
+    [No],
+    [No],
+    [Kaur\ (2025)], [BTC], [TextBlob], [Dizionario], [SVM, RF,\ NB, KNN], [No], [No],
+    [Vijayak.\ (2023)], [DOGE], [TextBlob,\ VADER], [Dizionario], [Nessuno\ (correlaz.)], [No], [No],
+    [Sattarov\ (2020)], [BTC], [VADER], [Dizionario], [SVM,\ Regressione], [No], [No],
     table.cell(fill: luma(220))[*Questa\ tesi*],
     table.cell(fill: luma(220))[*BTC*],
-    table.cell(fill: luma(220))[*?*],
-    table.cell(fill: luma(220))[*?*],
+    table.cell(fill: luma(220))[*Gemini\ 3.1\ flash-lite*],
+    table.cell(fill: luma(220))[*LLM*],
     table.cell(fill: luma(220))[*XGBoost*],
-    table.cell(fill: luma(220))[*?*],
-    table.cell(fill: luma(220))[*?*],
-  )
+    table.cell(fill: luma(220))[*Sì*],
+    table.cell(fill: luma(220))[*Sì*],
+  ),
 )
 #set table(inset: 9pt)
 
+#pagebreak()
+
+= Metodologia
+
+== Formulazione del problema
+
+Il problema affrontato è formulato come un compito di classificazione binaria supervisionata: dato un insieme di osservazioni settimanali relative al mercato di Bitcoin (BTC/USD) e a fonti informative correlate, si vuole prevedere se il prezzo di chiusura della settimana successiva sarà superiore (classe positiva, UP) o inferiore/uguale (classe negativa, DOWN) a quello della settimana corrente.
+
+La scelta di una granularità settimanale, anziché giornaliera, risponde a tre esigenze metodologiche. In primo luogo, attenua il rumore ad alta frequenza che caratterizza i mercati delle criptovalute, dove le oscillazioni di prezzo su orizzonti brevi sono in larga parte guidate da dinamiche di microstruttura di mercato scarsamente prevedibili. In secondo luogo, rende compatibili fonti dati con cadenze di aggiornamento eterogenee (dati di mercato continui, indicatori on-chain aggiornati a intervalli variabili, un campione di post social non uniformemente distribuito nel tempo). In terzo luogo, riduce la numerosità di osservazioni ridondanti dal punto di vista informativo, a fronte di un corrispondente aumento della varianza campionaria dovuto alla ridotta ampiezza del dataset risultante.
+
+== Fonti di dati
+
+Il sistema integra quattro categorie di fonti dati, raccolte tramite un modulo di ingestion dedicato:
+
+#figure(
+  caption: [Fonti dati e modalità di raccolta],
+  table(
+    columns: (3.2cm, 6.5cm, 5.3cm),
+    align: (left + horizon, left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Fonte*], [*Contenuto*], [*Modalità di accesso*]),
+    [Mercato],
+    [Quotazioni OHLCV settimanali di BTC/USD],
+    [API Yahoo Finance],
+
+    [On-chain/energetiche],
+    [Costo di produzione stimato per bitcoin, hash rate della rete],
+    [Metriche di mining aggregate],
+
+    [Sentiment social],
+    [Post/commenti da subreddit relativi a Bitcoin e criptovalute],
+    [API Reddit, classificazione tramite modello linguistico (Gemini)],
+
+    [Sentiment di mercato],
+    [Fear \& Greed Index],
+    [API pubblica dedicata],
+  ),
+)
+
+Ciascuna fonte viene ricampionata a cadenza settimanale con lo stesso criterio di ancoraggio temporale (etichetta di fine settimana), condizione necessaria affinché le successive operazioni di join tra le diverse serie storiche siano corrette e non introducano disallineamenti tra le osservazioni. L'aggregazione dei valori di chiusura utilizza sempre l'ultimo valore disponibile nella settimana (non una media), per preservare il significato economico di "prezzo di chiusura settimanale".
+
+== Feature Engineering
+
+Le feature utilizzate dal modello sono organizzate in quattro famiglie omogenee per natura e fonte del dato: feature tecniche (derivate esclusivamente dalla serie dei prezzi di chiusura) feature di sentiment, feature on-chain/energetiche e feature derivate dal Fear & Greed Index.
+
+=== Feature Tecniche
+
+#figure(
+  caption: [Feature tecniche],
+  table(
+    columns: (1fr, 1fr, 1fr),
+    align: (left + horizon, left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Feature*], [*Descrizione*], [*Motivazione*]),
+
+    [`log_return`], [Rendimento logaritmico settimanale], [Forma stazionaria e additiva, standard in finanza quantitativa],
+    [`volatility_w`], [Deviazione standard dei rendimenti (4 settimane)], [Misura il rischio/instabilità recente del prezzo],
+    [`rsi_14`], [Relative Strength Index a 14 periodi], [Momentum e condizioni di ipercomprato/ipervenduto],
+    [`macd_hist`], [Istogramma MACD], [Cattura i crossover di trend; sostituisce `macd`/`macd_signal`, scartate per collinearità],
+    [`sharpe_4w`], [Sharpe ratio mobile (4 settimane)], [Rendimento aggiustato per il rischio in un solo indicatore],
+    [`volume_norm`], [Volume normalizzato sulla propria media mobile], [Rileva anomalie di interesse indipendenti dal livello assoluto],
+  ),
+)
+
+=== Feature di Sentiment
+
+#figure(
+  caption: [Feature di sentiment],
+  table(
+    columns: (1fr, 1fr, 1fr),
+    align: (left + horizon, left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Feature*], [*Descrizione*], [*Motivazione*]),
+
+    [`sentiment_score_mean`], [Punteggio medio di sentiment settimanale], [Tono generale della discussione pubblica],
+    [`sentiment_score_weighted`], [Punteggio pesato per follower dell'autore], [Maggior peso agli autori con più reach/influenza],
+    [`positive_pct` \ `negative_pct`], [Percentuale di post positivi/negativi], [Cattura la polarizzazione, non solo il tono medio],
+    [`tweet_count`], [Volume di post analizzati], [Proxy dell'attenzione pubblica verso Bitcoin],
+    [`sentiment_momentum`], [Differenza dal sentiment medio delle 4 settimane precedenti], [Cattura variazioni brusche di umore],
+  ),
+)
+
+=== Feature On-Chain / Energetiche
+
+#figure(
+  caption: [Feature on-chain / energetiche],
+  table(
+    columns: (1fr, 1fr, 1fr),
+    align: (left + horizon, left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Feature*], [*Descrizione*], [*Motivazione*]),
+
+    [`cost_per_btc`], [Costo di produzione stimato per bitcoin], [Proxy del valore "fondamentale" (cfr. Sapra et al.)],
+    [`cost_per_btc_delta`], [Variazione percentuale settimanale del costo], [Cattura la dinamica, non solo il livello],
+    [`hash_rate_norm`], [Hash rate normalizzato sulla propria media mobile], [Proxy della fiducia/investimento dei miner nella rete],
+  ),
+)
+
+=== Feature di Sentiment del Mercato
+
+#figure(
+  caption: [Feature di sentiment del mercato],
+  table(
+    columns: (1fr, 1fr, 1fr),
+    align: (left + horizon, left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Feature*], [*Descrizione*], [*Motivazione*]),
+
+    [`fear_greed_mean` \ `fear_greed_close`], [Valore medio e di chiusura settimanale dell'indice], [Sentiment di mercato aggregato da fonti multiple],
+    [`fear_greed_delta`], [Variazione rispetto alla settimana precedente], [Cambi repentini di sentiment, coerente col momentum del sentiment testuale],
+  ),
+)
+
+Il criterio comune a tutte le famiglie, evidente dal confronto delle motivazioni riportate in tabella, è la ricerca di complementarità informativa più che di ridondanza: per ciascuna fonte si è privilegiata l'inclusione di misure che catturano aspetti distinti del fenomeno osservato (livello, variazione, dispersione, polarizzazione) piuttosto che più indicatori sostanzialmente equivalenti, come appunto vedremo successivamente.
+
+=== Feature macro, volatilità e momentum (esperimento di ampliamento)
+
+Successivamente
+
+=== Selezione e pruning delle feature
+
+Data l'ampiezza campionaria contenuta del dataset (dell'ordine di 110-120 osservazioni settimanali) rispetto al numero di feature disponibili, è stata applicata una fase di pruning automatico volta a contenere il rischio di overfitting:
+
+Rimozione di feature ridondanti: per ogni coppia di feature con correlazione assoluta superiore a 0.95, viene mantenuta solo una delle due (ad esempio, tra le tre componenti del MACD, correlate per costruzione, è stato mantenuto solo l'istogramma).
+Rimozione di feature a varianza nulla: feature costanti su tutto il periodo osservato non apportano alcuna informazione discriminante e vengono scartate esplicitamente.
+
+Un principio metodologico osservato rigorosamente in questa fase è che nessuna selezione di feature è stata basata sulla correlazione con la variabile target calcolata sull'intero dataset. Una simile pratica, per quanto diffusa, costituisce una forma di leakage nella fase di feature engineering: utilizzare informazione proveniente anche dal periodo che verrà successivamente impiegato come test per decidere quali feature includere nel modello equivale a "sbirciare" il risultato prima della validazione, inficiandone la validità. Il pruning qui adottato si basa esclusivamente su proprietà interne alle feature stesse (correlazione reciproca, varianza), indipendenti dalla variabile da prevedere.
+
+== Definizione del target
+
+La variabile target è costruita confrontando il prezzo di chiusura della settimana corrente con quello della settimana immediatamente successiva nell'indice temporale. Un aspetto metodologico che richiede attenzione esplicita riguarda la costruzione di questo confronto: fare riferimento alla riga successiva nell'indice (offset posizionale) anziché alla settimana calendariale successiva (offset temporale) espone al rischio che, in presenza di anche una sola settimana mancante nella serie storica, il target smetta silenziosamente di rappresentare "direzione della settimana successiva" senza generare alcun errore. Per questo motivo, la costruzione del target verifica esplicitamente che la distanza temporale tra un'osservazione e la successiva nell'indice sia esattamente di sette giorni; in caso contrario, l'osservazione viene scartata anziché essere etichettata in modo semanticamente errato.
+
+== Definizione del modello
+
+Il modello adottato è XGBoost (Extreme Gradient Boosting), un ensemble di alberi decisionali allenati in sequenza secondo il principio del gradient boosting, in cui ciascun albero è addestrato a correggere l'errore residuo dei predecessori. La scelta è motivata da tre proprietà rilevanti per il contesto applicativo: la capacità di modellare relazioni non lineari e interazioni tra feature eterogenee senza richiedere una fase di scaling, la disponibilità di meccanismi di regolarizzazione nativi (penalizzazioni L1/L2, subsampling di righe e colonne, vincoli sulla profondità degli alberi), particolarmente rilevanti data la ridotta ampiezza campionaria del dataset e la diffusione consolidata dell'algoritmo nella letteratura sulla previsione di serie finanziarie con feature tabellari, che ne facilita il confronto con lavori analoghi.
+
+== Metodologia di validazione
+
+La natura sequenziale e temporalmente ordinata dei dati richiede una procedura di validazione che rispetti rigorosamente la cronologia delle osservazioni, per evitare qualunque forma di leakage temporale, ossia l'uso implicito o esplicito di informazione futura durante l'addestramento o la selezione del modello.
+
+=== Split iniziale e purge gap
+
+Il dataset viene suddiviso in una porzione di addestramento (70%) e una di test (30%), con l'introduzione di un ulteriore margine di separazione (purge gap) di due settimane tra le due porzioni. Questo accorgimento previene che feature calcolate su finestre mobili a cavallo del confine tra le due porzioni possano condividere informazione tra addestramento e test.
+
+=== Ottimizzazione degli iperparametri
+
+La selezione degli iperparametri avviene tramite ricerca randomizzata (``` RandomizedSearchCV```) su uno spazio di ricerca deliberatamente contenuto e orientato alla regolarizzazione (profondità massima degli alberi limitata a 3, penalizzazioni L1/L2 significative, subsampling di righe e colonne), coerente con l'ampiezza campionaria disponibile. La validazione incrociata durante questa fase utilizza uno schema ``` TimeSeriesSplit``` a 5 fold, con un margine di due settimane tra le porzioni di addestramento e validazione di ciascun fold, per prevenire leakage tra osservazioni temporalmente adiacenti dovuto a feature con finestre mobili.
+
+Un aspetto metodologico rilevante riguarda l'interpretazione del punteggio massimo ottenuto da questa procedura (``` best_score_```): trattandosi del valore massimo osservato su un numero finito di configurazioni testate, tale punteggio è affetto da un bias di selezione che lo rende sistematicamente ottimistico rispetto alla reale capacità di generalizzazione del modello. Per questo motivo, tale valore non viene utilizzato come stima finale delle prestazioni del sistema, ruolo riservato esclusivamente alla procedura di validazione walk-forward descritta di seguito.
+
+=== Validazione walk-forward
+
+Per simulare in modo realistico l'utilizzo operativo del modello, la valutazione principale delle prestazioni avviene tramite una procedura di validazione walk-forward con finestra di addestramento progressivamente crescente (expanding window): a partire da una dimensione minima iniziale, il modello viene riaddestrato a ogni passo temporale sui soli dati disponibili fino a quel momento, e utilizzato per produrre una singola previsione sulla settimana immediatamente successiva, mai osservata durante l'addestramento.
+
+Gli iperparametri vengono ri-ottimizzati periodicamente durante questa procedura (a intervalli di 26 settimane), ma solo quando la finestra di addestramento disponibile supera una soglia minima prestabilita; al di sotto di tale soglia, la ri-ottimizzazione viene omessa poiché condotta su un numero di osservazioni insufficiente a garantire risultati stabili, rischiando di introdurre instabilità nel modello anziché migliorarne l'adattamento a eventuali cambiamenti nel regime di mercato.
+
+=== Quantificazione dell'incertezza statistica
+
+Data la ridotta numerosità delle previsioni prodotte in fase di walk-forward (dell'ordine di 70-90 osservazioni a seconda della configurazione), una singola stima puntuale delle metriche di classificazione (accuratezza, precisione, richiamo, F1-score, area sotto la curva ROC) è di per sé poco informativa circa l'affidabilità del risultato. È stata pertanto adottata una procedura di bootstrap non parametrico: le coppie previsione/esito osservate durante il walk-forward vengono ricampionate con reinserimento un numero elevato di volte (2.000 ripetizioni), ricalcolando a ogni ripetizione le metriche di interesse; la distribuzione empirica così ottenuta consente di stimare intervalli di confidenza al 95% attorno a ciascuna metrica.
+
+Questa procedura consente di distinguere un risultato metodologicamente solido da un artefatto di misurazione: qualora l'intervallo di confidenza ottenuto includa il valore corrispondente a un classificatore privo di potere predittivo (0,5 per accuratezza e AUC), il risultato puntuale osservato non può essere considerato statisticamente distinguibile dal caso, indipendentemente dal suo valore nominale.
+
+A completamento di questa analisi, è stato condotto un controllo di stabilità del regime di mercato, confrontando la proporzione di settimane rialziste osservata nel periodo di addestramento iniziale con quella osservata nella finestra di walk-forward, al fine di escludere che un'eventuale variazione nelle prestazioni fosse attribuibile a un cambiamento nella distribuzione della variabile target piuttosto che a un limite intrinseco del modello.
+
+== Baseline di confronto e backtesting
+
+Le prestazioni del modello sono messe a confronto con tre strategie di riferimento: Buy & Hold (esposizione costante al mercato per l'intero periodo), un semplice incrocio MACD (strategia tecnica classica, utile a verificare che il modello non stia replicando un segnale già catturato da un indicatore elementare) e una strategia casuale (media su numerose estrazioni pseudo-casuali, a rappresentare la prestazione attesa in assenza di qualunque capacità predittiva).
+
+È stata inoltre condotta una simulazione di backtesting, con un capitale iniziale nozionale e un costo di transazione applicato a ogni variazione di posizione, per stimare rendimento cumulato, Sharpe ratio annualizzato e drawdown massimo di una strategia operativa basata sui segnali del modello, posta a confronto con il Buy & Hold sullo stesso periodo. Questa analisi va interpretata con cautela quando le metriche di classificazione non risultano statisticamente significative: i costi di transazione tendono a erodere ulteriormente un segnale già debole o assente, e in periodi di trend di mercato marcato il Buy & Hold beneficia strutturalmente della semplice esposizione continua, indipendentemente dalla qualità di un eventuale segnale predittivo.
+
+== Interpretabilità del modello
+
+Un limite ricorrente nei lavori affini discussi nel capitolo precedente riguarda l'opacità decisionale dei modelli adottati, in particolare per le architetture neurali sequenziali e per i sistemi multi-agente basati su LLM, per i quali risulta difficile isolare il contributo delle singole feature a una predizione. La pipeline qui sviluppata affronta questo limite su due livelli complementari.
+
+A livello globale, viene calcolata la feature importance nativa del modello (basata sul guadagno informativo, gain, apportato da ciascuna feature nella costruzione degli alberi), che fornisce un ranking di quanto ciascuna feature venga utilizzata in media dal modello.
+
+A livello sia globale sia locale, viene condotta un'analisi tramite valori SHAP (SHapley Additive exPlanations), calcolati con un explainer specifico per modelli ad alberi (TreeExplainer), che restituisce valori esatti anziché approssimati. Per ciascuna osservazione, i valori SHAP scompongono l'output del modello nella somma dei contributi marginali di ogni feature, con segno e magnitudo, sulla base della teoria dei giochi cooperativi di Shapley; aggregando questi contributi su tutte le osservazioni si ottiene inoltre una misura di importanza globale (media del valore assoluto) alternativa e più informativa rispetto alla sola feature importance basata sul gain, poiché riflette anche l'eterogeneità e la direzione dell'effetto di ciascuna feature.
+
+Un principio metodologico da tenere presente nell'interpretazione di questi risultati è che l'importanza (nativa o SHAP) descrive esclusivamente su quali feature il modello si appoggia per produrre le proprie predizioni, non se tali predizioni siano corrette o generalizzino a dati non osservati: le due analisi rispondono a domande distinte e vanno lette congiuntamente alla validazione statistica descritta nella sezione 3.6, non in sua sostituzione.
+
+A completamento dell'analisi di interpretabilità, è stata condotta una procedura di ablation per gruppi di feature: le feature sono raggruppate per famiglia omogenea (tecniche, sentiment, on-chain/energetiche, Fear & Greed Index, macro/volatilità), e per ciascun gruppo viene ripetuta la procedura di validazione walk-forward utilizzando esclusivamente le feature di quel gruppo, con iperparametri fissi e conservativi per garantire un confronto omogeneo tra gruppi. Questa analisi consente di verificare se un sottoinsieme di feature isolato possieda un potere predittivo che risulti attenuato o mascherato dal rumore quando combinato con l'intero vettore di feature, offrendo un livello di granularità diagnostica ulteriore rispetto alla sola valutazione del modello completo.
+
+== Sintesi delle scelte
+
+L'insieme delle scelte descritte in questo capitolo risponde a un principio metodologico unificante: dato il vincolo strutturale rappresentato dalla ridotta ampiezza campionaria del dataset, ogni fase della pipeline (selezione delle feature, ottimizzazione degli iperparametri, valutazione delle prestazioni) è stata progettata per minimizzare il rischio di sovrastima delle capacità predittive del sistema, anche a costo di ottenere stime puntuali meno favorevoli. I risultati ottenuti applicando questa metodologia sono presentati e discussi nel capitolo successivo.
+
+#pagebreak()
+
+= Implementazione
+
+Questo capitolo mostra l'implementazione in codice delle scelte metodologiche precedenti. La pipeline è composta da moduli Python riutilizzabili orchestrati da notebook Jupyter. La struttura segue l'ordine di esecuzione della pipeline, in parallelo al capitolo 4.
+
+
+== Raccolta dati
+
+Il modulo ``` DataIngestor``` gestisce l'accesso a ogni fonte dati tramite metodi dedicati (``` fetch_market_data```, ``` fetch_mining_metrics```, ``` fetch_energy_cost```, ``` fetch_fear_greed```), assicurando ricampionamento uniforme e stessa funzione di aggregazione per il prezzo di chiusura su tutte le fonti.
+
+Un esempio di fetching di una categoria di questi dati:
+
+```python
+def fetch_energy_cost(
+  self,
+  electricity_price_kwh: float = 0.05,
+  df_mining: pd.DataFrame = None,
+) -> pd.DataFrame:
+        try:
+            resp = requests.get(
+                "https://community-api.coinmetrics.io/v4/timeseries/asset-metrics",
+                params={"assets": "btc", "metrics": "HashRate,RevUSD", "frequency": "1d",
+                        "start_time": self.start_date.strftime("%Y-%m-%d"),
+                        "end_time": self.end_date.strftime("%Y-%m-%d")},
+                timeout=30
+            )
+            resp.raise_for_status()
+            df_cm = pd.DataFrame(resp.json().get("data", []))
+            df_cm["timestamp"] = pd.to_datetime(df_cm["time"])
+            df_cm = df_cm.set_index("timestamp")[["HashRate", "RevUSD"]].astype(float)
+            hash_rate_ths = df_cm["HashRate"]
+            miners_rev_usd = df_cm["RevUSD"]
+        except Exception as e:
+            if df_mining is not None:
+                hash_rate_ths = df_mining["hash_rate"] / 1e3   # GH/s to TH/s
+            else:
+                csv = os.path.join(self.output_dir, "bitcoin_mining_metrics.csv")
+                df_mining = pd.read_csv(csv, index_col="timestamp", parse_dates=True)
+                hash_rate_ths = df_mining["hash_rate"] / 1e3
+            miners_rev_usd = None
+        EFFICIENCY_J_PER_TH = 20.0
+        DAILY_BTC_REWARDS   = 3.125 * 144 + 15
+        power_kw     = hash_rate_ths * EFFICIENCY_J_PER_TH / 1000.0
+        daily_kwh    = power_kw * 24.0
+        cost_per_btc = (daily_kwh * electricity_price_kwh) / DAILY_BTC_REWARDS
+        result = pd.DataFrame({
+            "hash_rate_ths":        hash_rate_ths,
+            "power_gw":             power_kw / 1e6,
+            "daily_consumption_gwh": daily_kwh / 1e6,
+            "annualised_twh":       (daily_kwh * 365.25) / 1e9,
+            "cost_per_btc_usd":     cost_per_btc,
+        }, index=hash_rate_ths.index)
+        if miners_rev_usd is not None:
+            result["miners_revenue_usd"] = miners_rev_usd
+        result = result.loc[self.start_date : self.end_date].resample(self.frequency).mean()
+        result.index.name = "timestamp"
+        result.to_csv(os.path.join(self.output_dir, "bitcoin_energy_cost.csv"))
+        return result
+```
+
+Nel caso, invece, della raccolta dei post social da Reddit ho utilizzato un archivio pubblico di nome ArticShift nel seguente modo:
+
+```python
+def fetch_arctic_shift_feed(self,subreddits: list[str] | None = None, min_score: int = 5, sleep_between_calls: float = 1.0, window_days: int = 7, max_per_window: int = 200) -> pd.DataFrame:
+        if subreddits is None:
+            subreddits = ["Bitcoin", "CryptoCurrency", "BitcoinMarkets"]
+        BASE_URL        = "https://arctic-shift.photon-reddit.com/api/comments/search"
+        checkpoint_path = os.path.join(self.output_dir, "bitcoin_arctic_reddit_checkpoint.csv")
+        if os.path.exists(checkpoint_path):
+            df_existing = pd.read_csv(checkpoint_path)
+            df_existing["timestamp"] = pd.to_datetime(df_existing["timestamp"])
+            all_rows = df_existing.to_dict("records")
+            last_ts  = df_existing["timestamp"].max()
+        else:
+            all_rows = []
+            last_ts  = None
+        for sub in subreddits:
+            n_sub        = 0
+            window_start = self.start_date
+            while window_start < self.end_date:
+                window_end = min(window_start + timedelta(days=window_days), self.end_date)
+                if last_ts is not None and window_end <= last_ts:
+                    window_start = window_end
+                    continue
+                before = window_end.strftime("%Y-%m-%dT%H:%M:%S")
+                after  = window_start.strftime("%Y-%m-%dT%H:%M:%S")
+                n_window = 0
+                while True:
+                    url = (
+                        f"{BASE_URL}"
+                        f"?subreddit={sub}"
+                        f"&after={after}"
+                        f"&before={before}"
+                        f"&limit=100"
+                        f"&sort=desc"
+                        f"&fields=body,score,created_utc"
+                    )
+                    try:
+                        resp      = requests.get(url, timeout=30)
+                        remaining = int(resp.headers.get("X-RateLimit-Remaining", 10))
+                        if remaining < 2:
+                            reset = int(resp.headers.get("X-RateLimit-Reset", 10))
+                            print(f"\n   [rate limit] Aspetto {reset}s...")
+                            time.sleep(reset)
+                        resp.raise_for_status()
+                        data = resp.json().get("data", [])
+                    except Exception as e:
+                        print(f"\n   [warn] Errore r/{sub} [{after} → {before}]: {e}")
+                        data = []
+                        break
+                    if not data:
+                        break
+                    for item in data[:max_per_window]:
+                        ts = datetime.fromtimestamp(
+                            item.get("created_utc", 0),
+                            tz=timezone.utc
+                        ).replace(tzinfo=None)
+                        all_rows.append({
+                            "timestamp":      ts,
+                            "source":         f"Reddit_r/{sub}",
+                            "text":           item.get("body", ""),
+                            "user_followers": item.get("score", 0),
+                        })
+                        n_window += 1
+                    n_sub += len(data)
+                    print(f"   r/{sub}: {n_sub} commenti finora...", end="\r")
+                    pd.DataFrame(all_rows).to_csv(checkpoint_path, index=False)
+                    if n_window >= max_per_window:
+                        break
+                    oldest = min(item["created_utc"] for item in data)
+                    before = datetime.fromtimestamp(oldest - 1, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
+                    if oldest <= int(window_start.timestamp()):
+                        break
+                    time.sleep(sleep_between_calls)
+                window_start = window_end
+        if not all_rows:
+            return pd.DataFrame(columns=["timestamp", "source", "text", "user_followers"])
+        df = pd.DataFrame(all_rows)
+        df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
+        df = df.dropna(subset=["timestamp", "user_followers"])
+        df = df.loc[df["user_followers"] >= min_score]
+        df = df.drop_duplicates(subset=["timestamp", "text"]).sort_values("timestamp").reset_index(drop=True)
+        output_path = os.path.join(self.output_dir, "bitcoin_arctic_reddit.csv")
+        df.to_csv(output_path, index=False)
+        if os.path.exists(checkpoint_path):
+            os.remove(checkpoint_path)
+        return df
+```
+
+#figure(
+caption: [Metodi della classe DataIngestor],
+table(
+columns: (1fr, 1fr, 1.4fr),
+align: (left, left, left),
+fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+table.header([Metodo], [Funzione], [Implementazione]),
+
+[``` __init__```],
+[Imposta periodo e frequenza di ricampionamento.],
+[Parametri: ``` start_date```, ``` end_date```, ``` frequency="W"```. Crea cartella output.],
+
+[``` fetch_market_data```],
+[Scarica e ricampiona quotazioni BTC/USD.],
+[Usa yfinance; aggrega con ``` last```, ``` sum```, ``` max```, ``` min```, ``` first```. Salva in CSV.],
+
+[``` fetch_mining_metrics```],
+[Scarica hash rate e difficoltà di rete.],
+[API blockchain.info; media settimanale con ``` resample(...).mean()```.],
+
+[``` fetch_energy_cost```],
+[Stima costo di produzione per BTC.],
+[API CoinMetrics, fallback su mining metrics o CSV. Modello costo/energia con parametri fissi.],
+
+[``` fetch_arctic_shift_feed```],
+[Raccoglie commenti Reddit su Bitcoin da più subreddit.],
+[API arctic-shift con finestre temporali, rate limiting e checkpoint su disco per ripresa.],
+
+[``` fetch_fear_greed```],
+[Scarica Fear & Greed Index e statistiche settimanali.],
+[API alternative.me; nessuna autenticazione.],
+),
+)
+Tra i pattern implementativi comuni a più metodi, il più rilevante dal punto di vista metodologico è il meccanismo di *checkpoint* di `fetch_arctic_shift_feed`, che permette di riprendere una raccolta dati incrementale (nuovi commenti ogni settimana) senza ri-scaricare l'intero storico a ogni esecuzione:
+
+```python
+checkpoint_path = os.path.join(self.output_dir, "bitcoin_arctic_reddit_checkpoint.csv")
+if os.path.exists(checkpoint_path):
+    df_existing = pd.read_csv(checkpoint_path)
+    all_rows = df_existing.to_dict("records")
+    last_ts  = df_existing["timestamp"].max()
+else:
+    all_rows, last_ts = [], None
+if last_ts is not None and window_end <= last_ts:
+    continue
+```
+
+Lo stesso principio è impiegato anche nella classificazione del sentiment (``` SentimentEngine.analyze```), dove evita di ri-analizzare tramite il modello LLM Gemini i post già classificati in esecuzioni precedenti.
+
+Un secondo aspetto implementativo degno di nota è la strategia di resilienza a fonti non critiche: per dati non indispensabili alla costruzione della feature matrix, un fallimento di rete non interrompe l'intera pipeline, ma ricade su un CSV già scaricato in una run precedente, se disponibile, restituendo altrimenti ``` None``` in modo che la fase di join successiva possa escludere la fonte senza propagare l'errore.
+
+#pagebreak()
+
+== Sentiment Analysis
+
+Il modulo ``` SentimentEngine``` incapsula sia l'estrazione del sentiment testuale tramite modello linguistico sia il calcolo delle feature derivate dalle altre fonti dati. La Tabella [ref] (vedi tabella_sentimentengine.typ) riassume i metodi utilizzati nella pipeline finale.
+
+#figure(
+  caption: [Metodi della classe `SentimentEngine` (pipeline finale)],
+  table(
+    columns: (1fr, 1fr, 1fr),
+    align: (left + horizon, left + horizon, left + horizon),
+    fill: (_, y) => if y == 0 { luma(210) } else if calc.odd(y) { luma(245) } else { white },
+    table.header([*Metodo*], [*Cosa fa*], [*Come lo fa*]),
+
+    [`_clean_tweet`],
+    [Normalizza il testo grezzo di un post prima della classificazione.],
+    [Rimuove HTML, URL, menzioni, converte hashtag in parole, filtra caratteri non ASCII.],
+
+    [`_analyze_batch`],
+    [Classifica un batch di post tramite il modello linguistico, restituendo punteggio e label per ciascuno.],
+    [Costruisce un prompt strutturato e forza una risposta in formato JSON; gestisce retry su errori di rate limit e risposte malformate.],
+
+    [`analyze`],
+    [Orchestra la classificazione dell'intero dataset di post, in batch, con ripresa da checkpoint.],
+    [Salta i post già presenti nel checkpoint su disco; aggrega i punteggi a livello settimanale al termine.],
+
+    [`compute_rsi` \ `compute_macd` \ `compute_sharpe`],
+    [Calcolano i rispettivi indicatori tecnici sulla serie dei prezzi.],
+    [Uso esclusivo di `rolling`/`ewm`, mai statistiche sull'intera serie.],
+
+    [`compute_technical_features`],
+    [Assembla le sei feature tecniche in un unico DataFrame.],
+    [Chiama i tre metodi precedenti e unisce i risultati sull'indice temporale di `df_market`.],
+
+    [`compute_energy_features`],
+    [Calcola costo per bitcoin, sua variazione e hash rate normalizzato.],
+    [Trasformazioni dirette (`pct_change`, `rolling`) sulle colonne di `df_energy`.],
+
+    [`compute_sentiment_momentum`],
+    [Calcola la differenza tra il sentiment corrente e la media delle 4 settimane precedenti.],
+    [`shift(1)` prima di `rolling(4)`, per escludere la settimana corrente dalla propria baseline.],
+  ),
+)
+
+Il punto di maggior rilievo per la componente NLP della tesi è la costruzione della chiamata al modello linguistico in ``` _analyze_batch```. I post vengono numerati e inseriti in un unico prompt per batch (riducendo il numero di chiamate API rispetto a una classificazione post per post), con una richiesta esplicita di output strutturato:
+
+#pagebreak()
+
+
+```python
+numbered = "\n".join(f"{i+1}. {t}" for i, t in enumerate(tweets))
+prompt = f"""
+    Analyze the sentiment of each tweet below about Bitcoin/crypto markets.
+    For each tweet return ONLY a JSON array with objects containing:
+    - "id": the tweet number (integer)
+    - "score": float from -1.0 (extremely negative) to +1.0 (extremely positive)
+    - "label": one of "positive", "neutral", "negative"
+    Tweets: {numbered}
+    Return ONLY the JSON array, no other text.
+"""
+
+response = self.client.models.generate_content(
+    model=self.model,
+    contents=prompt,
+    config={"response_mime_type": "application/json"},
+)
+```
+
+== Feature engineering
+
+Ogni trasformazione che genera una feature è implementata in modo da utilizzare esclusivamente operazioni causali (``` rolling```, ``` ewm```, ``` pct_change```, ``` diff```), mai statistiche calcolate sull'intera serie. A titolo di esempio, la feature di momentum del sentiment è implementata come:
+
+```python
+def compute_sentiment_momentum(self, df_sentiment, window=4, col="sentiment_score_mean"):
+    baseline = df_sentiment[col].shift(1).rolling(window).mean()
+    return (df_sentiment[col] - baseline).rename(f"{col}_momentum_{window}w")
+```
+Lo ``` shift(1)``` prima del ``` rolling(window)``` è l'elemento implementativo che garantisce la causalità: esclude la settimana corrente dal calcolo della propria baseline, cosicché il valore di ciascuna settimana dipenda solo da settimane strettamente precedenti.
+
+Ulteriormente fornisco un esempio di funzione che calcola una feature tecnica, ovverio lo Sharpe Ratio:
+
+```python
+def compute_sharpe(
+        self,
+        returns: pd.Series,
+        window: int = 4,
+        risk_free: float = 0.0,
+    ) -> pd.Series:
+        excess = returns - risk_free / 52
+        return (
+            excess.rolling(window).mean()
+            / excess.rolling(window).std()
+            * np.sqrt(52)
+        )
+```
+
+Inoltre ho gestito il caso in cui ci siano gap nel sentiment. Non tutte le settimane presentano un volume di post sufficiente per una stima affidabile del sentiment (o, in casi limite, nessun post disponibile). Il riempimento di queste settimane mancanti è implementato tramite forward-fill limitato, nel seguente modo:
+
+```python
+cols_interp = ["sentiment_score_mean", "sentiment_score_weighted", "positive_pct", "negative_pct"]
+df_sentiment[cols_interp] = df_sentiment[cols_interp].ffill(limit=4).fillna(0)
+```
+
+La scelta del forward-fill al posto dell'interpolazione lineare non è arbitraria: un'interpolazione lineare tra il valore noto precedente e quello noto successivo (``` interpolate(method="linear", limit_direction="both")```) utilizzerebbe, per costruzione, un'osservazione futura per stimare il valore di una settimana mancante, introducendo look-ahead bias esattamente nel punto in cui il dato è più scarso e quindi più vulnerabile. Il forward-fill, al contrario, propaga solo l'ultimo valore osservato in avanti nel tempo, rispettando il vincolo di causalità. Il parametro ``` limit=4``` evita inoltre che un'assenza di dati prolungata (oltre quattro settimane) venga mascherata da un valore ormai stantio: oltre questa soglia la settimana viene invece impostata a un valore neutro (``` fillna(0)```), segnalando implicitamente l'assenza di informazione piuttosto che simularne una non aggiornata. Questa scelta implementativa è quanto emerso dalla verifica di look-ahead bias descritta nel processo di sviluppo della pipeline, che aveva individuato un'implementazione precedente (basata su interpolazione bidirezionale) affetta da questo problema.
+
+Il pruning delle feature è implementato in due passaggi indipendenti dal target, in coerenza con il principio di assenza di leakage nella selezione delle feature discusso nella medesima sezione: rimozione delle feature a varianza nulla (``` nunique(dropna=True) <= 1```) e rimozione automatica, per ogni coppia con correlazione assoluta superiore a una soglia, di una delle due colonne coinvolte, calcolata esclusivamente sulla matrice delle feature (``` feature_matrix[num_cols].corr()```), senza mai includere la colonna target in questo calcolo.
+
+== Costruzione del target
+La verifica esplicita del gap temporale è implementata confrontando la distanza tra timestamp consecutivi con il valore atteso, anziché assumerla implicitamente da un offset posizionale:
+
+```python
+EXPECTED_GAP = pd.Timedelta(weeks=1)
+
+for t in feature_matrix.index:
+    t_idx = close.index.get_loc(t)
+    next_ts = close.index[t_idx + 1]
+    if (next_ts - t) != EXPECTED_GAP:
+        target.append(np.nan)
+        continue
+    target.append(int(close.iloc[t_idx + 1] > close.iloc[t_idx]))
+```
+
+== Ottimizzazione degli iperparametri
+
+Lo spazio di ricerca degli iperparametri è definito esplicitamente per essere deliberatamente contenuto e orientato alla regolarizzazione, coerentemente con l'ampiezza campionaria disponibile:
+
+```python
+param_grid = {
+    "n_estimators":     [50, 100, 150],
+    "max_depth":        [2, 3],
+    "learning_rate":    [0.01, 0.05, 0.1],
+    "subsample":        [0.7, 0.8, 1.0],
+    "colsample_bytree": [0.7, 0.8, 1.0],
+    "min_child_weight": [3, 5, 8],
+    "gamma":            [0, 0.1],
+    "reg_alpha":        [0, 0.1],
+    "reg_lambda":       [2, 5, 10],
+}
+```
+
+La profondità massima è limitata a 2-3 (in contesti con più dati si usa tipicamente valori tra i 4 e 8), e i parametri di regolarizzazione L1/L2 (``` reg_alpha```, ``` reg_lambda```) e di subsampling di righe/colonne (``` subsample```, ``` colsample_bytree```) sono inclusi esplicitamente nello spazio di ricerca anziché lasciati ai valori di default, meno conservativi, della libreria.
+
+La ricerca randomizzata degli iperparametri è incapsulata in una funzione riutilizzabile, richiamata sia nella fase di tuning iniziale sia, con un budget di ricerca ridotto, nei successivi cicli di re-tuning periodico durante il walk-forward:
+
+```python
+def tune_hyperparams(X_tr, y_tr, n_iter=20, n_splits=5, gap=2, seed=42):
+    tscv = TimeSeriesSplit(n_splits=n_splits, gap=gap)
+    search = RandomizedSearchCV(
+        estimator=xgb.XGBClassifier(eval_metric="logloss", random_state=seed),
+        param_distributions=param_grid,
+        n_iter=n_iter, scoring="roc_auc", cv=tscv,
+        random_state=seed, n_jobs=-1,
+    )
+    search.fit(X_tr, y_tr)
+    return search.best_params_, search.best_score_
+```
+
+== Validazione walk-forward
+
+Il ciclo di validazione implementa la finestra di addestramento crescente, con il re-tuning periodico condizionato al superamento di una soglia minima di dati disponibili:
+
+```python
+current_params = best_params
+since_retune = 0
+
+for i in range(MIN_TRAIN_SIZE, len(X_clean)):
+    X_tr, y_tr = X_clean.iloc[:i], y_clean.iloc[:i]
+    X_te = X_clean.iloc[i:i+1]
+
+    if since_retune >= RETUNE_EVERY and len(X_tr) >= MIN_RETUNE_SIZE:
+        current_params, _ = tune_hyperparams(X_tr, y_tr, n_iter=10, n_splits=3, gap=2)
+        since_retune = 0
+
+    model = xgb.XGBClassifier(**current_params, eval_metric="logloss", random_state=42)
+    model.fit(X_tr, y_tr)
+    probabilities.append(model.predict_proba(X_te)[0, 1])
+    since_retune += 1
+```
+
+La quantificazione dell'incertezza statistica è implementata come ricampionamento con reinserimento delle coppie previsione/esito prodotte da questo ciclo:
+
+```python
+for _ in range(N_BOOT):
+    idx = rng.randint(0, n, n)
+    if len(np.unique(actuals[idx])) < 2:
+        continue
+    boot_auc.append(roc_auc_score(actuals[idx], probabilities[idx]))
+
+auc_ci = np.percentile(boot_auc, [2.5, 97.5])
+```
+
+== Interpretabilità
+
+L'analisi SHAP è implementata tramite l'explainer specifico per modelli ad alberi, applicato al modello finale addestrato sull'intero dataset disponibile:
+
+```python
+explainer   = shap.TreeExplainer(final_model)
+shap_values = explainer.shap_values(X_clean)
+mean_abs_shap = pd.Series(
+    np.abs(shap_values).mean(axis=0), index=X_clean.columns
+).sort_values(ascending=False)
+```
+
+
+== Persistenza e riproducibilità
+
+Il modello finale, l'elenco delle feature attese e le metriche del walk-forward vengono salvati su disco al termine dell'esecuzione:
+
+```python
+final_model.save_model("models/xgboost_model.json")
+json.dump(X_clean.columns.tolist(), open("models/feature_names.json", "w"))
+json.dump(model_stats, open("models/model_stats.json", "w"))
+```
+
+Il salvataggio esplicito di ``` feature_names.json``` garantisce che, in fase di inferenza, il modello riceva sempre le feature nello stesso ordine e con lo stesso nome usati in addestramento, indipendentemente da eventuali modifiche future al pruning per correlazione, che potrebbe produrre un insieme di colonne leggermente diverso a fronte di nuovi dati.
+
+#pagebreak()
+
+
+
+== Tecnologie utilizzate
+
+=== Strumenti di Sviluppo Software
+==== Visual Studio Code
+==== Jupyter Notebook
+
+=== Linguaggi di Programmazione
+==== Python 3
+
+=== Librerie o Framework
+==== Pandas
+==== NumPy 
+==== Matplotlib
+==== XGBoost
+==== SciKitLearn
+
+=== Persistenza dei dati
+==== File Comma-Separated Values (CSV)
+==== File JSON
+==== Portable Network Graphics (PNG)
 
 = Bibliografia e Sitografia
 
@@ -418,19 +1077,19 @@ La seguente tabella riassume e mette a confronto i principali paper con approcci
 
 - #link("a", "[3]") N. Sapra, I. Shaikh, and D. Roubaud, "  " Energy Economics, vol. 156, p. 109216, 2026. \ Disponibile a: #link("https://pdf.sciencedirectassets.com/271683/1-s2.0-S0140988326X20023/1-s2.0-S0140988326000952/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjECgaCXVzLWVhc3QtMSJGMEQCIAkDH%2FgWJM3uoshWL2SDkd8Mm3psQNLTdVLa1bkZcZS6AiBGkoiYNZ1I8TI6HWszQDuFibeV2MhL8nrKHu9Y7%2F%2FuLiq8BQjx%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAUaDDA1OTAwMzU0Njg2NSIMF9Wrxadk8b%2BhgO4KKpAF4NLKTnVhBMxDCU44408ZbFPo2HTVFWeij8yQERT%2B8MdMoj0nJJ0mksy4ybGJ5cL%2BUuP%2FWPEzNmtLFml5%2Ff3OIRLn2dxO1CQ%2FKxARSbBGt4R7TpzjIMH3beUgYB7cYn2ATAq8rnkTCJE5ms1Owm2X5uyJ%2FgvfJUS0UAE0ydP9MQyfFFB3Y6WnYX2LR2%2Bi9fQeukwNtlN3%2FSHoBqlUaSdYXtWPz9RGL11PP1ArrMNOKj6WbWtNxGnkNPjVgfEKrEtB8jSDdDnytaQMuiP1lfmp36GJAnHHYKelgZFJpJ3HDt%2FXI4hUSb%2B1uCOhO0aAQj91sMzcwxgeC43kkAjANkrCTW55olnS47Pn1FynkpKHYPZQeI0WSuZLcVet0H1wg7l3x7DWaF9QIEERz9Q7FYDmX6EA%2BQSzJbrHsT4SwTSa4W2z9psAaIBJy1Z%2BxNeOIYs1NX4CWm6wcnX%2BYiE1qKo4EIsOorNlaRhibw92r2F%2B8sGitLnmGglhLDx3H3UxhYSKflEmnTIhEeEOMc%2FD1gZgK1otQJhZxO%2B7U%2F437rxoD6yONJ0sgSqzTXIeuXgzDCuZ2pQfpyg8PCtNSHZkqUYzbj5llhn6Rnlx65kKHchiI4S3aM%2BncMkEdlw983Le%2Bs%2BsCmDeVZ1AxWk5pBJtNtnMvuSGDOedw4Z03yZ8%2FjK56WKI3LeILFKsMXvn9LwCDrDo9vTUPimNCn91fJDSHRQLBGTNv%2FH0aQqFLcGhAwC0jscNTMCeLHmwL47kp%2F6nQTtpgUyAOxZH3oMWgLOwhanfpHIwX7vdHgp2DYF%2FjOqTn%2Fspo88DNsK5NEFPp2QYy2sUvTk6SY%2B9SPHdvOl5Y3Yh1up8kckp%2FKl9bmdFQG8DYXsw4LW30AY6sgEPtUKmcci5SXnsRpwUmNZJE3yDALKSWgXICoaluwNAuC3C4i6UiZtWkn7PTiCvFNmw0vOF0%2F7cVRP7AzTATipE%2F8Epc1aL%2FBqbndbINsCtMNgif8K%2Bt4bPlNrViyUJmp6C7Q8TnxU6GrvVrXA9hEtLGEdKa3%2FX6p1CXcPJvT8Yvz0f0PMlvanl%2FNbkTXYOD09Z20NlfK8xJ1eAjAolHEwd065j5gXGFzxm%2FNN185UWhlEt&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20260520T170246Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTY7YMELQSH%2F20260520%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=4ad904ea57a454420c1b62d14f4e87047427b2f083fcfc3baa24b8af98769508&hash=c73b4e65f4bdaa631c3bb77be981d7921245fcd3fad97e48dbb88e0bcde7531a&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=S0140988326000952&tid=spdf-0c385172-31dd-472d-b92d-a936f5605160&sid=dfef7687124c6745d378c1c1425259ef3bcegxrqa&type=client&tsoh=d3d3LnNjaWVuY2VkaXJlY3QuY29t&rh=d3d3LnNjaWVuY2VkaXJlY3QuY29t&ua=071b5b0904070a5a55&rr=9fece9357a45eda3&cc=it", "PDF")
 
-- #link("a", "[4]") C. M. Liapis, A. Karanikola, and S. Kotsiantis, "A Multi-Method Survey on the Use of Sentiment Analysis in Multivariate Financial Time Series Forecasting" Entropy, vol. 23, no. 12, p. 1603, 2021. \ Disponibile a: #link("PDF","https://www.mdpi.com/1099-4300/23/12/1603")
+- #link("a", "[4]") C. M. Liapis, A. Karanikola, and S. Kotsiantis, "A Multi-Method Survey on the Use of Sentiment Analysis in Multivariate Financial Time Series Forecasting" Entropy, vol. 23, no. 12, p. 1603, 2021. \ Disponibile a: #link("PDF", "https://www.mdpi.com/1099-4300/23/12/1603")
 
-- #link("a", "[5]") J. Manogna, G. S. Chowdary, G. Meghana, and P. C. Nair, "Bitcoin Price Prediction Based on Sentiment Analysis" in 2023 IEEE 20th India Council International Conference (INDICON), 2023, pp. 1–5. \ Disponibile a: #link("PDF","https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10440877")
+- #link("a", "[5]") J. Manogna, G. S. Chowdary, G. Meghana, and P. C. Nair, "Bitcoin Price Prediction Based on Sentiment Analysis" in 2023 IEEE 20th India Council International Conference (INDICON), 2023, pp. 1–5. \ Disponibile a: #link("PDF", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10440877")
 
-- #link("a", "[6]") H. Anand and A. Arya, "An Empirical Study of Financial BERT Models for Sentiment Analysis and Cryptocurrency Price Correlation" in 2024 IEEE 9th International Conference for Convergence in Technology (I2CT), 2024, pp. 1–6. \ Disponibile a: #link("PDF","")
+- #link("a", "[6]") H. Anand and A. Arya, "An Empirical Study of Financial BERT Models for Sentiment Analysis and Cryptocurrency Price Correlation" in 2024 IEEE 9th International Conference for Convergence in Technology (I2CT), 2024, pp. 1–6. \ Disponibile a: #link("PDF", "")
 
-- #link("a", "[7]") C. Kaur, Samrity, R. Uppal, and S. Kaur, "Twitter Sentiment Analysis of Bitcoin Price Fluctuation with Machine Learning Techniques" in 2025 Seventh International Conference on Computational Intelligence and Communication Technologies (CCICT), 2025, pp. 1–6. \ Disponibile a: 
+- #link("a", "[7]") C. Kaur, Samrity, R. Uppal, and S. Kaur, "Twitter Sentiment Analysis of Bitcoin Price Fluctuation with Machine Learning Techniques" in 2025 Seventh International Conference on Computational Intelligence and Communication Technologies (CCICT), 2025, pp. 1–6. \ Disponibile a:
 
-- #link("a", "[8]") S. Vasishth, S. K. Sharma, A. K. Nayyar, and K. Vijayakuamar, "Impact of Elon Musk's tweets on the price of Dogecoin using Sentiment Analysis" in 2023 International Conference on Advances in Computing, Communication and Applied Informatics (ACCAI), 2023, pp. 1–6. \ Disponibile a: 
+- #link("a", "[8]") S. Vasishth, S. K. Sharma, A. K. Nayyar, and K. Vijayakuamar, "Impact of Elon Musk's tweets on the price of Dogecoin using Sentiment Analysis" in 2023 International Conference on Advances in Computing, Communication and Applied Informatics (ACCAI), 2023, pp. 1–6. \ Disponibile a:
 
-- #link("a", "[9]") O. Sattarov and H. S. Jeon, "Forecasting Bitcoin Price Fluctuation by Twitter Sentiment Analysis," in 2020 International Conference on Information Science and Communications Technologies (ICISCT), 2020, pp. 1–4. \ Disponibile a: 
+- #link("a", "[9]") O. Sattarov and H. S. Jeon, "Forecasting Bitcoin Price Fluctuation by Twitter Sentiment Analysis," in 2020 International Conference on Information Science and Communications Technologies (ICISCT), 2020, pp. 1–4. \ Disponibile a:
 
-- #link("a", "[10]") J. Gomes Jr., H. Bernardino, A. B. Vieira, V. Dorner, and D. Svetinovic, "Cryptoeconomic User Behavior in the Acute Stages of Geopolitical Conflict," IEEE Transactions on Computational Social Systems, vol. 11, no. 5, pp. 7055–7067, Oct. 2024. \ Disponibile a: 
+- #link("a", "[10]") J. Gomes Jr., H. Bernardino, A. B. Vieira, V. Dorner, and D. Svetinovic, "Cryptoeconomic User Behavior in the Acute Stages of Geopolitical Conflict," IEEE Transactions on Computational Social Systems, vol. 11, no. 5, pp. 7055–7067, Oct. 2024. \ Disponibile a:
 
 - #link("a", "[11]") Kraken Learn, "Cosa determina il calo del prezzo dei Bitcoin?", Kraken.com, 2025.\
   Disponibile a: #link("https://www.kraken.com/it/learn/what-makes-bitcoins-price-go-down")
