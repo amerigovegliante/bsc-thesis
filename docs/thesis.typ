@@ -47,17 +47,17 @@
 
 = Sommario
 
-Il presente documento descrive il lavoro svolto durante il periodo di stage/tesi, finalizzato allo sviluppo di una pipeline software per la predizione della direzione settimanale del prezzo di Bitcoin, mediante l'integrazione di tecniche di Natural Language Processing, Sentiment Analysis e modelli di Machine Learning.
+Il presente documento descrive il lavoro svolto durante il periodo di stage e poi di tesi, finalizzato allo sviluppo di una pipeline software per la predizione della direzione settimanale del prezzo di Bitcoin, mediante l'integrazione di tecniche di Natural Language Processing, Sentiment Analysis e modelli di Machine Learning.
 
 L'obiettivo della tesi è quello di costruire una pipeline strutturata e riproducibile che consenta, insieme all'estrazione automatica dei dati, di effettuare la pulizia, l'analisi e l'elaborazione di dati testuali provenienti dal social network Reddit, integrandoli con indicatori tecnici di mercato, metriche di blockchain di tipo energetico e un indice di sentiment di mercato (Fear & Greed Index), per la previsione della direzione del prezzo di Bitcoin su base settimanale.
 
 Attraverso l'integrazione di un modulo di estrazione dati, è stata realizzata una soluzione che consente di raccogliere automaticamente i dati testuali e di mercato, facilitando la creazione di un dataset aggiornato per l'addestramento del modello predittivo (XGBoost), unitamente a una metodologia di validazione temporale (walk-forward) e a una verifica statistica rigorosa dei risultati tramite intervalli di confidenza bootstrap.
 
-Le conclusioni, a differenza di quanto talvolta riportato in lavori analoghi senza una quantificazione esplicita dell'incertezza statistica, mostrano come, una volta corrette le criticità metodologiche individuate nella fase preliminare (overfitting nella selezione degli iperparametri, rischio di look-ahead bias nelle feature testuali), non emerga una correlazione tra il sentiment dei post e la direzione settimanale del prezzo di Bitcoin statisticamente distinguibile dal caso. Questo risultato è stato verificato anche con un ampliamento sostanziale del set di feature (indicatori macroeconomici come S&P 500, DXY, VIX, e metriche di volatilità/momentum multi-orizzonte), condotto con lo stesso rigore metodologico, senza ottenere miglioramenti misurabili: un indizio che il segnale assente non sia dovuto a un set di feature troppo povero. Questo risultato, pur negativo, è coerente con la letteratura sull'efficienza informativa dei mercati crypto su orizzonti brevi ed è reso metodologicamente solido proprio dalla pipeline di validazione sviluppata.
+Le conclusioni, a differenza di quanto talvolta riportato in lavori analoghi senza una quantificazione esplicita dell'incertezza statistica, mostrano come, una volta corrette le criticità metodologiche individuate nella fase preliminare (overfitting nella selezione degli iperparametri, rischio di look-ahead bias nelle feature testuali), non emerga una correlazione tra il sentiment dei post e la direzione settimanale del prezzo di Bitcoin statisticamente distinguibile dal caso. Questo risultato è stato verificato anche con un ampliamento sostanziale del set di feature (indicatori macroeconomici come S&P 500, DXY, VIX, e metriche di volatilità o momentum multi-orizzonte), condotto con lo stesso rigore metodologico, senza ottenere miglioramenti misurabili: un indizio che il segnale assente non sia dovuto a un set di feature troppo povero. Questo risultato, pur negativo, è coerente con la letteratura sull'efficienza informativa dei mercati crypto su orizzonti brevi ed è reso metodologicamente solido proprio dalla pipeline di validazione sviluppata.
 
 L'esperienza ha creato le precondizioni per un ulteriore sviluppo del progetto, con l'obiettivo di rafforzare la capacità predittiva del sistema, integrando uno storico di dati più ampio, ulteriori fonti non ancora esplorate, feature nuove e un confronto sistematico con modelli a minore complessità.
 
-Il progetto è stato diviso in tre parti: la prima dedicata all'estrazione dei dati, garantendo l'accesso a informazioni aggiornate e utilizzando le Application Programming Interface (API) di Reddit, Yahoo Finance e dei principali indicatori on-chain/di sentiment di mercato; la seconda parte si è concentrata sull'effettivo sviluppo della pipeline, implementando le funzionalità di Natural Language Processing, Sentiment Analysis e del modello di Machine Learning, con particolare attenzione alla correttezza metodologica della fase di validazione (assenza di leakage temporale, quantificazione dell'incertezza statistica); infine, la terza parte ha riguardato l'analisi critica dei risultati ottenuti e la loro interpretazione attraverso metriche statistiche e il confronto con altri metodi, modelli e configurazioni di feature.
+Il progetto è stato diviso in tre parti: la prima dedicata all'estrazione dei dati, garantendo l'accesso a informazioni aggiornate e utilizzando le Application Programming Interface (API) di Reddit, Yahoo Finance e dei principali indicatori on-chain o di sentiment di mercato; la seconda parte si è concentrata sull'effettivo sviluppo della pipeline, implementando le funzionalità di Natural Language Processing, Sentiment Analysis e del modello di Machine Learning, con particolare attenzione alla correttezza metodologica della fase di validazione (assenza di leakage temporale, quantificazione dell'incertezza statistica); infine, la terza parte ha riguardato l'analisi critica dei risultati ottenuti e la loro interpretazione attraverso metriche statistiche e il confronto con altri metodi, modelli e configurazioni di feature.
 
 #pagebreak()
 
@@ -161,7 +161,7 @@ Il focus della presente tesi si inserisce per contrasto rispetto all'approccio d
     [*Tipo NLP*], [LLM (generativo, basato su Transformer)],
     [*Modello predittivo*], [Agente _Trader_ LLM (sintesi testuale libera)],
     [*Feature utilizzate*], [Report fondamentali, dati tecnici, sentiment, macro, tutto via prompt],
-    [*Granularità temporale*], [Non specificata (operatività intraday/giornaliera)],
+    [*Granularità temporale*], [Non specificata (operatività giornaliera)],
     [*Backtesting*], [Sì (rendimento cumulativo, Sharpe Ratio, Max Drawdown)],
     [*Interpretabilità*], [Nessuna (black-box testuale)],
     [*Costo computazionale*], [*Molto elevato*, decine di istanze LLM in parallelo, dipendenza da API commerciali],
@@ -447,9 +447,12 @@ La seguente tabella riassume e mette a confronto i principali paper con approcci
 
 == Formulazione del problema
 
-Il problema affrontato è formulato come un compito di classificazione binaria supervisionata: dato un insieme di osservazioni settimanali relative al mercato di Bitcoin (BTC/USD) e a fonti informative correlate, si vuole prevedere se il prezzo di chiusura della settimana successiva sarà superiore (classe positiva, UP) o inferiore/uguale (classe negativa, DOWN) a quello della settimana corrente.
+Il problema affrontato è un compito di classificazione binaria: dato un insieme di osservazioni settimanali relative al mercato di Bitcoin (BTC/USD) e a fonti informative correlate, si vuole prevedere se il prezzo di chiusura della settimana successiva sarà superiore (UP) o inferiore o uguale (DOWN) a quello della settimana corrente.
 
-La scelta di una granularità settimanale, anziché giornaliera, risponde a tre esigenze metodologiche. In primo luogo, attenua il rumore ad alta frequenza che caratterizza i mercati delle criptovalute, dove le oscillazioni di prezzo su orizzonti brevi sono in larga parte guidate da dinamiche di microstruttura di mercato scarsamente prevedibili. In secondo luogo, rende compatibili fonti dati con cadenze di aggiornamento eterogenee (dati di mercato continui, indicatori on-chain aggiornati a intervalli variabili, un campione di post social non uniformemente distribuito nel tempo). In terzo luogo, riduce la numerosità di osservazioni ridondanti dal punto di vista informativo, a fronte di un corrispondente aumento della varianza campionaria dovuto alla ridotta ampiezza del dataset risultante.
+La scelta di una granularità settimanale, anziché giornaliera, risponde a tre esigenze metodologiche:
+- Attenua il rumore ad alta frequenza che caratterizza i mercati delle criptovalute, dove le oscillazioni di prezzo su orizzonti brevi sono molto frequenti.
+- Rende compatibili fonti dati con cadenze di aggiornamento eterogenee (dati di mercato continui, indicatori di blockchain aggiornati a intervalli variabili, un campione di post social non uniformemente distribuito nel tempo).
+- Riduce la quantità di osservazioni informativamente ridondanti, a fronte di un corrispondente aumento della varianza campionaria dovuto alla ridotta ampiezza del dataset risultante.
 
 == Fonti di dati
 
@@ -466,12 +469,12 @@ Il sistema integra quattro categorie di fonti dati, raccolte tramite un modulo d
     [Quotazioni OHLCV settimanali di BTC/USD],
     [API Yahoo Finance],
 
-    [On-chain/energetiche],
+    [Blockchain o energetiche],
     [Costo di produzione stimato per bitcoin, hash rate della rete],
     [Metriche di mining aggregate],
 
     [Sentiment social],
-    [Post/commenti da subreddit relativi a Bitcoin e criptovalute],
+    [Post da subreddit relativi a Bitcoin e criptovalute],
     [API Reddit, classificazione tramite modello linguistico (Gemini)],
 
     [Sentiment di mercato],
@@ -484,7 +487,7 @@ Ciascuna fonte viene ricampionata a cadenza settimanale con lo stesso criterio d
 
 == Feature Engineering
 
-Le feature utilizzate dal modello sono organizzate in quattro famiglie omogenee per natura e fonte del dato: feature tecniche (derivate esclusivamente dalla serie dei prezzi di chiusura) feature di sentiment, feature on-chain/energetiche e feature derivate dal Fear & Greed Index.
+Le feature utilizzate dal modello sono organizzate in quattro famiglie omogenee per natura e fonte del dato: feature tecniche (derivate esclusivamente dalla serie dei prezzi di chiusura) feature di sentiment, feature blockchain o energetiche e feature derivate dal Fear & Greed Index.
 
 === Feature Tecniche
 
@@ -497,8 +500,8 @@ Le feature utilizzate dal modello sono organizzate in quattro famiglie omogenee 
     table.header([*Feature*], [*Descrizione*], [*Motivazione*]),
 
     [`log_return`], [Rendimento logaritmico settimanale], [Forma stazionaria e additiva, standard in finanza quantitativa],
-    [`volatility_w`], [Deviazione standard dei rendimenti (4 settimane)], [Misura il rischio/instabilità recente del prezzo],
-    [`rsi_14`], [Relative Strength Index a 14 periodi], [Momentum e condizioni di ipercomprato/ipervenduto],
+    [`volatility_w`], [Deviazione standard dei rendimenti (4 settimane)], [Misura l'instabilità recente del prezzo],
+    [`rsi_14`], [Relative Strength Index a 14 periodi], [Momentum e condizioni di ipercomprato o ipervenduto],
     [`macd_hist`], [Istogramma MACD], [Cattura i crossover di trend; sostituisce `macd`/`macd_signal`, scartate per collinearità],
     [`sharpe_4w`], [Sharpe ratio mobile (4 settimane)], [Rendimento aggiustato per il rischio in un solo indicatore],
     [`volume_norm`], [Volume normalizzato sulla propria media mobile], [Rileva anomalie di interesse indipendenti dal livello assoluto],
@@ -516,17 +519,17 @@ Le feature utilizzate dal modello sono organizzate in quattro famiglie omogenee 
     table.header([*Feature*], [*Descrizione*], [*Motivazione*]),
 
     [`sentiment_score_mean`], [Punteggio medio di sentiment settimanale], [Tono generale della discussione pubblica],
-    [`sentiment_score_weighted`], [Punteggio pesato per follower dell'autore], [Maggior peso agli autori con più reach/influenza],
-    [`positive_pct` \ `negative_pct`], [Percentuale di post positivi/negativi], [Cattura la polarizzazione, non solo il tono medio],
+    [`sentiment_score_weighted`], [Punteggio pesato per follower dell'autore], [Maggior peso agli autori con più reach],blocch
+    [`positive_pct` \ `negative_pct`], [Percentuale di post positivi o negativi], [Cattura la polarizzazione, non solo il tono medio],
     [`tweet_count`], [Volume di post analizzati], [Proxy dell'attenzione pubblica verso Bitcoin],
     [`sentiment_momentum`], [Differenza dal sentiment medio delle 4 settimane precedenti], [Cattura variazioni brusche di umore],
   ),
 )
 
-=== Feature On-Chain / Energetiche
+=== Feature di Blockchain o Energetiche
 
 #figure(
-  caption: [Feature on-chain / energetiche],
+  caption: [Feature di blockchain o energetiche],
   table(
     columns: (1fr, 1fr, 1fr),
     align: (left + horizon, left + horizon, left + horizon),
@@ -535,7 +538,7 @@ Le feature utilizzate dal modello sono organizzate in quattro famiglie omogenee 
 
     [`cost_per_btc`], [Costo di produzione stimato per bitcoin], [Proxy del valore "fondamentale" (cfr. Sapra et al.)],
     [`cost_per_btc_delta`], [Variazione percentuale settimanale del costo], [Cattura la dinamica, non solo il livello],
-    [`hash_rate_norm`], [Hash rate normalizzato sulla propria media mobile], [Proxy della fiducia/investimento dei miner nella rete],
+    [`hash_rate_norm`], [Hash rate normalizzato sulla propria media mobile], [Proxy della fiducia dei miner nella rete],
   ),
 )
 
@@ -595,11 +598,11 @@ Un aspetto metodologico rilevante riguarda l'interpretazione del punteggio massi
 
 Per simulare in modo realistico l'utilizzo operativo del modello, la valutazione principale delle prestazioni avviene tramite una procedura di validazione walk-forward con finestra di addestramento progressivamente crescente (expanding window): a partire da una dimensione minima iniziale, il modello viene riaddestrato a ogni passo temporale sui soli dati disponibili fino a quel momento, e utilizzato per produrre una singola previsione sulla settimana immediatamente successiva, mai osservata durante l'addestramento.
 
-Gli iperparametri vengono ri-ottimizzati periodicamente durante questa procedura (a intervalli di 26 settimane), ma solo quando la finestra di addestramento disponibile supera una soglia minima prestabilita; al di sotto di tale soglia, la ri-ottimizzazione viene omessa poiché condotta su un numero di osservazioni insufficiente a garantire risultati stabili, rischiando di introdurre instabilità nel modello anziché migliorarne l'adattamento a eventuali cambiamenti nel regime di mercato.
+Gli iperparametri vengono riottimizzati periodicamente durante questa procedura (a intervalli di 26 settimane), ma solo quando la finestra di addestramento disponibile supera una soglia minima prestabilita; al di sotto di tale soglia, la riottimizzazione viene omessa poiché condotta su un numero di osservazioni insufficiente a garantire risultati stabili, rischiando di introdurre instabilità nel modello anziché migliorarne l'adattamento a eventuali cambiamenti nel regime di mercato.
 
 === Quantificazione dell'incertezza statistica
 
-Data la ridotta numerosità delle previsioni prodotte in fase di walk-forward (dell'ordine di 70-90 osservazioni a seconda della configurazione), una singola stima puntuale delle metriche di classificazione (accuratezza, precisione, richiamo, F1-score, area sotto la curva ROC) è di per sé poco informativa circa l'affidabilità del risultato. È stata pertanto adottata una procedura di bootstrap non parametrico: le coppie previsione/esito osservate durante il walk-forward vengono ricampionate con reinserimento un numero elevato di volte (2.000 ripetizioni), ricalcolando a ogni ripetizione le metriche di interesse; la distribuzione empirica così ottenuta consente di stimare intervalli di confidenza al 95% attorno a ciascuna metrica.
+Data la ridotta numerosità delle previsioni prodotte in fase di walk-forward (dell'ordine di 70-90 osservazioni a seconda della configurazione), una singola stima puntuale delle metriche di classificazione (accuratezza, precisione, richiamo, F1-score, area sotto la curva ROC) è di per sé poco informativa circa l'affidabilità del risultato. È stata pertanto adottata una procedura di bootstrap non parametrico: le coppie previsione o esito osservate durante il walk-forward vengono ricampionate con reinserimento un numero elevato di volte (2.000 ripetizioni), ricalcolando a ogni ripetizione le metriche di interesse; la distribuzione empirica così ottenuta consente di stimare intervalli di confidenza al 95% attorno a ciascuna metrica.
 
 Questa procedura consente di distinguere un risultato metodologicamente solido da un artefatto di misurazione: qualora l'intervallo di confidenza ottenuto includa il valore corrispondente a un classificatore privo di potere predittivo (0,5 per accuratezza e AUC), il risultato puntuale osservato non può essere considerato statisticamente distinguibile dal caso, indipendentemente dal suo valore nominale.
 
@@ -619,9 +622,9 @@ A livello globale, viene calcolata la feature importance nativa del modello (bas
 
 A livello sia globale sia locale, viene condotta un'analisi tramite valori SHAP (SHapley Additive exPlanations), calcolati con un explainer specifico per modelli ad alberi (TreeExplainer), che restituisce valori esatti anziché approssimati. Per ciascuna osservazione, i valori SHAP scompongono l'output del modello nella somma dei contributi marginali di ogni feature, con segno e magnitudo, sulla base della teoria dei giochi cooperativi di Shapley; aggregando questi contributi su tutte le osservazioni si ottiene inoltre una misura di importanza globale (media del valore assoluto) alternativa e più informativa rispetto alla sola feature importance basata sul gain, poiché riflette anche l'eterogeneità e la direzione dell'effetto di ciascuna feature.
 
-Un principio metodologico da tenere presente nell'interpretazione di questi risultati è che l'importanza (nativa o SHAP) descrive esclusivamente su quali feature il modello si appoggia per produrre le proprie predizioni, non se tali predizioni siano corrette o generalizzino a dati non osservati: le due analisi rispondono a domande distinte e vanno lette congiuntamente alla validazione statistica descritta nella sezione 3.6, non in sua sostituzione.
+Un principio metodologico da tenere presente nell'interpretazione di questi risultati è che l'importanza (nativa o SHAP) descrive esclusivamente su quali feature il modello si appoggia per produrre le proprie predizioni, non se tali predizioni siano corrette o generalizzino a dati non osservati.
 
-A completamento dell'analisi di interpretabilità, è stata condotta una procedura di ablation per gruppi di feature: le feature sono raggruppate per famiglia omogenea (tecniche, sentiment, on-chain/energetiche, Fear & Greed Index, macro/volatilità), e per ciascun gruppo viene ripetuta la procedura di validazione walk-forward utilizzando esclusivamente le feature di quel gruppo, con iperparametri fissi e conservativi per garantire un confronto omogeneo tra gruppi. Questa analisi consente di verificare se un sottoinsieme di feature isolato possieda un potere predittivo che risulti attenuato o mascherato dal rumore quando combinato con l'intero vettore di feature, offrendo un livello di granularità diagnostica ulteriore rispetto alla sola valutazione del modello completo.
+A completamento dell'analisi di interpretabilità, è stata condotta una procedura detta di ablation (dove si rimuove feature per feature con l'intento di capire l'influenza che hanno sul modello) per gruppi di feature: le feature sono raggruppate per famiglia omogenea (tecniche, sentiment, on-chain o energetiche, Fear & Greed Index, macro e volatilità), e per ciascun gruppo viene ripetuta la procedura di validazione walk-forward utilizzando esclusivamente le feature di quel gruppo, con iperparametri fissi in modo che confronto tra i vari casi possa essere omogeneo. Questa analisi consente di verificare se un sottoinsieme di feature isolato possieda un potere predittivo che risulti attenuato o mascherato dal rumore quando combinato con l'intero vettore di feature.
 
 == Sintesi delle scelte
 
@@ -856,7 +859,7 @@ Il modulo ``` SentimentEngine``` incapsula sia l'estrazione del sentiment testua
 
     [`compute_rsi` \ `compute_macd` \ `compute_sharpe`],
     [Calcolano i rispettivi indicatori tecnici sulla serie dei prezzi.],
-    [Uso esclusivo di `rolling`/`ewm`, mai statistiche sull'intera serie.],
+    [Uso esclusivo di `rolling` o `ewm`, mai statistiche sull'intera serie.],
 
     [`compute_technical_features`],
     [Assembla le sei feature tecniche in un unico DataFrame.],
@@ -1046,28 +1049,6 @@ Il salvataggio esplicito di ``` feature_names.json``` garantisce che, in fase di
 
 #pagebreak()
 
-
-
-== Tecnologie utilizzate
-
-=== Strumenti di Sviluppo Software
-==== Visual Studio Code
-==== Jupyter Notebook
-
-=== Linguaggi di Programmazione
-==== Python 3
-
-=== Librerie o Framework
-==== Pandas
-==== NumPy 
-==== Matplotlib
-==== XGBoost
-==== SciKitLearn
-
-=== Persistenza dei dati
-==== File Comma-Separated Values (CSV)
-==== File JSON
-==== Portable Network Graphics (PNG)
 
 = Bibliografia e Sitografia
 
