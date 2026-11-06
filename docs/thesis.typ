@@ -7,6 +7,7 @@
     text(size: 9pt, it)
   )
 )
+
 #show table: set text(size: 11pt)
 
 #set text(lang: "it")
@@ -31,25 +32,67 @@
 }
 
 #let frontespizio = [
-  #image("unipd.png", width: 10cm)
+  #align(center)[
+    #text(18pt, weight: "bold")[Università degli Studi di Padova]
+    #v(0.2cm)
+    #smallcaps[#text(13pt)[Dipartimento di Matematica "Tullio Levi-Civita"]]
+    #v(0.1cm)
+    #smallcaps[#text(11pt)[Corso di Laurea in Informatica]]
 
-  #text(22pt)[Università degli Studi di Padova] \
+    #v(1cm)
+    #image("unipd.png", width: 4.5cm)
 
-  #text(22pt)[Corso di Laurea in Informatica]
-  #v(0.5cm)
-  #text(
-    22pt,
-    weight: "bold",
-  )[
-    Predizione dei movimenti di prezzo del Bitcoin attraverso il _Sentiment Analysis_ dei _Post Social_ ​]
+    #v(0.2cm)
+    #image("dipartimento.gif", width: 6cm)
 
+    #v(1.5cm)
+    #text(18pt, weight: "bold")[
+      Predizione dei movimenti di prezzo del Bitcoin attraverso il _Sentiment Analysis_ dei _Post Social_
+    ]
 
-  #text(22pt)[Tesi di Laurea Triennale]
+    #v(0.6cm)
+    #text(13pt, style: "italic")[Tesi di Laurea Triennale]
 
-  #text(20pt)[*Laureando*: \ Amerigo Vegliante \ 2111004]
+    #v(1.5cm)
+  ]
+
+  #grid(
+    columns: (1fr, 1fr),
+    align: (left, right),
+    [
+      #text(style: "italic")[Relatore] \
+      Prof. Nicolò Navarin \
+
+      #text(style: "italic")[Co-Relatrice]\
+      Prof.ssa Ombretta Gaggi
+    ],
+    [
+      #text(style: "italic")[Laureando] \
+      Amerigo Vegliante
+    ],
+  )
+
+  #v(1.5cm)
+  #align(center)[
+    #line(length: 100%, stroke: 0.5pt)
+    #v(0.3cm)
+    #smallcaps[Anno Accademico 2025-2026]
+  ]
 ]
-
 #align(center)[#frontespizio]
+
+#pagebreak()
+
+#align(center + horizon)[
+  #text(13pt, style: "italic")[
+    "Science compels us to explode the sun!"
+  ]
+
+  #v(0.5cm)
+  #text(11pt)[
+    Pye, _Outer Wilds_
+  ]
+]
 
 #let indice = [
   #outline(title: "Indice")
@@ -79,6 +122,17 @@
 
 #set page(numbering: "1")
 #counter(page).update(1)
+
+#show heading.where(level: 1): it => {
+  pagebreak(weak: true)
+  v(1.5cm)
+  if it.numbering != none {
+    text(size: 22pt)[Capitolo #counter(heading).display("1")]
+    v(0.3cm)
+  }
+  text(size: 20pt, weight: "bold")[#it.body]
+  v(1cm)
+}
 
 = Sommario
 
@@ -128,7 +182,7 @@ Coerentemente con il problema di ricerca, gli obiettivi specifici di questo lavo
 
 I successivi capitoli del documento sono organizzati nel seguente modo:
 - *@sec-analisi-lett: Analisi della Letteratura*: colloca il lavoro nel contesto della ricerca esistente su fenomeni correlati al mercato di Bitcoin e su modelli predittivi analoghi, evidenziando i punti di distacco rispetto alle scelte di questa tesi.
-- *@sec-tecnologie Tecnologie utilizzate*: descrive le tecnologie usate nello sviluppo del progetto di tirocinio.
+- *@sec-tecnologie: Tecnologie utilizzate*: descrive le tecnologie usate nello sviluppo del progetto di tirocinio.
 - *@sec-metodologia: Metodologia*: descrive le scelte progettuali e il loro razionale, dalla formulazione del problema alla validazione statistica dei risultati, indipendentemente dai dettagli implementativi.
 - *@sec-implementazione: Implementazione*: descrive la traduzione in codice delle scelte metodologiche, per fase della pipeline (raccolta dati, feature engineering, addestramento, validazione, interpretabilità).
 - *@sec-sperimentazione: Sperimentazione e risultati*: riporta i risultati ottenuti applicando la metodologia, corredati dalla relativa quantificazione dell'incertezza statistica.
@@ -203,7 +257,9 @@ Il presente lavoro converte l'evidenza analitica ex-post qui riportata in un seg
 
 I seguenti contributi propongono architetture di _machine learning_ o _deep learning_ per la predizione del valore di criptovalute, con o senza componente di _sentiment analysis_. Per facilitare il confronto, i lavori sono raggruppati in quattro categorie in base alla tecnica di estrazione del _sentiment_ e alla complessità del modello predittivo adottato: assenza di _sentiment_, _sentiment_ lessicale, _sentiment_ basato su Transformer / *BERT*, e architetture avanzate (reti ricorrenti e sistemi multi-agente basati su *LLM*). Ciascun contributo è seguito da una tabella riassuntiva degli aspetti metodologici chiave, inoltre una tabella comparativa generale è riportata al termine del gruppo.
 
-=== Modelli senza componente di _sentiment_
+=== Modelli senza componente di sentiment
+
+Questa categoria raggruppa i lavori che affrontano la predizione del prezzo delle criptovalute basandosi esclusivamente su indicatori tecnici di mercato, senza alcuna componente testuale o di _sentiment_. Pur non essendo direttamente comparabili alla struttura di questa tesi, questi contributi costituiscono un riferimento utile per valutare l'apporto della componente di _sentiment analysis_ rispetto a un approccio basato sui soli dati di prezzo.
 
 ==== Hafid et al. (2024) - [2]
 
@@ -252,7 +308,9 @@ Il presente lavoro conferma l'efficacia del classificatore adottato in questo _p
   ),
 ) <tab-hafid>
 
-=== Modelli con _sentiment_ lessicale (dizionari)
+=== Modelli con sentiment lessicale (dizionari)
+
+I lavori raccolti in questa categoria estraggono il _sentiment_ tramite approcci lessicali basati su dizionari predefiniti (*VADER*, *TextBlob*), che assegnano un punteggio di polarità a un testo confrontandone le parole con un vocabolario di riferimento etichettato. Si tratta della tecnica di _sentiment analysis_ più semplice ed economica tra quelle esaminate in questo capitolo, ma anche la meno capace di cogliere ironia, sarcasmo e gergo specifico del dominio finanziario e crittografico, limiti discussi nel dettaglio per ciascun contributo.
 
 ==== Kaur et al. (2025) - [7]
 
@@ -270,7 +328,7 @@ L'approccio metodologico di questo _paper_ presenta alcune limitazioni struttura
 
 ===== Conclusioni
 
-La presente tesi migliora l'approccio di questo _paper_ su due fronti: un'estrazione del _sentiment_ basata su un modello linguistico contestuale anziché su un dizionario statico, e una validazione più completa, comprensiva di una simulazione operativa di _backtesting_ assente nel lavoro originale. I dettagli sono discussi nel capitolo di Metodologia. Gli aspetti metodologici chiave del _paper_ sono riassunti nella Tabella @tab-kaur.
+La presente tesi migliora l'approccio di questo _paper_ su due fronti: un'estrazione del _sentiment_ basata su un modello linguistico contestuale anziché su un dizionario statico, e una validazione più completa, comprensiva di una simulazione operativa di _backtesting_ assente nel lavoro originale. I dettagli sono discussi nel capitolo di Metodologia. Gli aspetti metodologici chiave del _paper_ sono riassunti nella @tab-kaur.
 
 #figure(
   caption: [Riepilogo metodologico, Kaur et al. (2025) [7]],
@@ -308,7 +366,7 @@ Nonostante l'efficacia nel dimostrare il fenomeno della manipolazione o dell'inf
 
 ===== Conclusioni
 
-La presente tesi evolve l'intuizione di questo _paper_ sul peso dei flussi informativi verso un impianto più generalizzabile: da un singolo _account_ su una _meme coin_ a un aggregato di canali distribuiti su Bitcoin, e da una correlazione ex-post a un classificatore predittivo validato tramite _backtesting_. I dettagli sono discussi nel capitolo di Metodologia. Gli aspetti metodologici chiave del _paper_ sono riassunti nella Tabella @tab-vijayakumar.
+La presente tesi evolve l'intuizione di questo _paper_ sul peso dei flussi informativi verso un impianto più generalizzabile: da un singolo _account_ su una _meme coin_ a un aggregato di canali distribuiti su Bitcoin, e da una correlazione ex-post a un classificatore predittivo validato tramite _backtesting_. I dettagli sono discussi nel capitolo di Metodologia. Gli aspetti metodologici chiave del _paper_ sono riassunti nella @tab-vijayakumar.
 
 #figure(
   caption: [Riepilogo metodologico, Vijayakumar et al. (2023) [8]],
@@ -346,7 +404,7 @@ L'impianto metodologico del lavoro risente inevitabilmente dell'anzianità della
 
 ===== Conclusioni
 
-Il presente lavoro adotta questo _paper_ come _baseline_ storica, rivoluzionandone l'architettura su tre fronti: un'estrazione del _sentiment_ contestuale anziché lessicale, un vettore di _feature_ multivariato anziché bivariato, e una validazione economica tramite _backtesting_ anziché la sola accuratezza statistica. I dettagli sono discussi nel capitolo di Metodologia. Gli aspetti metodologici chiave del _paper_ sono riassunti nella Tabella @tab-sattarov.
+Il presente lavoro adotta questo _paper_ come _baseline_ storica, rivoluzionandone l'architettura su tre fronti: un'estrazione del _sentiment_ contestuale anziché lessicale, un vettore di _feature_ multivariato anziché bivariato, e una validazione economica tramite _backtesting_ anziché la sola accuratezza statistica. I dettagli sono discussi nel capitolo di Metodologia. Gli aspetti metodologici chiave del _paper_ sono riassunti nella @tab-sattarov.
 
 #figure(
   caption: [Riepilogo metodologico, Sattarov et al. (2020) [9]],
@@ -368,7 +426,9 @@ Il presente lavoro adotta questo _paper_ come _baseline_ storica, rivoluzionando
   ),
 ) <tab-sattarov>
 
-=== Modelli con _sentiment_ basato su Transformer / BERT
+=== Modelli con _sentiment_ basato su Transformer / *BERT*
+
+I lavori raccolti in questa categoria estraggono il _sentiment_ tramite modelli pre-addestrati basati sull'architettura *BERT* (*FinBERT*, *CryptoBERT*, *DistilBERT*), spesso specializzati domini specifici come quello finanziario. Rispetto agli approcci lessicali della categoria precedente, questi modelli colgono meglio il contesto semantico e le sfumature del testo, a fronte di un costo computazionale maggiore e, come discusso nei singoli contributi, senza necessariamente tradursi in un impianto predittivo altrettanto maturo.
 
 ==== Anand et al. (2024) - [6]
 
@@ -386,7 +446,7 @@ Sebbene il contributo fornisca una validazione cruciale sull'uso di modelli _dom
 
 ===== Conclusioni
 
-Il presente lavoro si configura come l'estensione applicativa dei risultati di questo _paper_: la correlazione _sentiment_-prezzo qui dimostrata viene tradotta in una _feature_ di input per un classificatore predittivo, integrata con indicatori tecnici e dati energetici, e le decisioni risultanti vengono validate tramite _backtesting_, aspetti entrambi assenti nel lavoro originale. I dettagli sono discussi nel capitolo di Metodologia. Gli aspetti metodologici chiave del _paper_ sono riassunti nella Tabella @tab-anand.
+Il presente lavoro si configura come l'estensione applicativa dei risultati di questo _paper_: la correlazione _sentiment_-prezzo qui dimostrata viene tradotta in una _feature_ di input per un classificatore predittivo, integrata con indicatori tecnici e dati energetici, e le decisioni risultanti vengono validate tramite _backtesting_, aspetti entrambi assenti nel lavoro originale. I dettagli sono discussi nel capitolo di Metodologia. Gli aspetti metodologici chiave del _paper_ sono riassunti nella @tab-anand.
 
 #figure(
   caption: [Riepilogo metodologico, Anand et al. (2024) [6]],
@@ -408,7 +468,9 @@ Il presente lavoro si configura come l'estensione applicativa dei risultati di q
   ),
 ) <tab-anand>
 
-=== Architetture avanzate: reti ricorrenti e sistemi multi-agente LLM
+=== Architetture avanzate: reti ricorrenti e sistemi multi-agente *LLM*
+
+Questa categoria raccoglie i lavori con l'impianto predittivo più complesso tra quelli esaminati: reti neurali ricorrenti per l'elaborazione sequenziale del testo e dei dati storici (*LSTM*, *BiGRU*), e sistemi multi-agente basati su *LLM* che simulano un processo decisionale distribuito tra più ruoli specializzati. La maggiore complessità architetturale, come discusso nei singoli contributi, non garantisce di per sé una maggiore trasparenza o affidabilità del sistema.
 
 ==== Manogna et al. (2023) - [5]
 
@@ -426,7 +488,7 @@ L'approccio adottato in questo _paper_, pur confermando la reattività del prezz
 
 ===== Conclusioni
 
-Il presente lavoro conferma l'utilità del _sentiment_ dei _social_ evidenziata da questo _paper_, correggendone i limiti su tre fronti: un orizzonte settimanale anziché giornaliero, meno esposto alla volatilità frenetica dei singoli _post_, un modello predittivo interpretabile anziché una rete neurale _black-box_, e l'integrazione di fonti aggiuntive oltre al solo _sentiment_ testuale. I dettagli sono discussi nel capitolo di Metodologia. Gli aspetti metodologici chiave del _paper_ sono riassunti nella Tabella @tab-manogna.
+Il presente lavoro conferma l'utilità del _sentiment_ dei _social_ evidenziata da questo _paper_, correggendone i limiti su tre fronti: un orizzonte settimanale anziché giornaliero, meno esposto alla volatilità frenetica dei singoli _post_, un modello predittivo interpretabile anziché una rete neurale _black-box_, e l'integrazione di fonti aggiuntive oltre al solo _sentiment_ testuale. I dettagli sono discussi nel capitolo di Metodologia. Gli aspetti metodologici chiave del _paper_ sono riassunti nella @tab-manogna.
 
 #figure(
   caption: [Riepilogo metodologico, Manogna et al. (2023) [5]],
@@ -525,7 +587,7 @@ La @tab-confronto-predittivi riassume e mette a confronto i principali _paper_ c
 
 ==== Discussione
 
-Dal confronto sintetizzato nella Tabella @tab-confronto-predittivi emergono tre osservazioni rilevanti per collocare la presente tesi rispetto allo stato dell'arte.
+Dal confronto sintetizzato nella @tab-confronto-predittivi emergono tre osservazioni rilevanti per collocare la presente tesi rispetto allo stato dell'arte.
 
 In primo luogo, si osserva una relazione inversa tra sofisticazione del modello NLP e completezza della validazione: i lavori che adottano tecniche di _sentiment analysis_ più avanzate (*LLM* multi-agente in Xiao [1], modelli Transformer in Anand [6]) tendono a non tradurre il segnale estratto in un classificatore predittivo validato economicamente, mentre i lavori con un impianto predittivo più semplice (Hafid [2], Kaur [7], Sattarov [9]) si affidano a un'estrazione del _sentiment_ lessicale o ne fanno del tutto a meno. Nessuno dei contributi esaminati combina un'estrazione del _sentiment_ allo stato dell'arte con un classificatore addestrato, un _backtesting_ economico e un'analisi di interpretabilità: è esattamente questa combinazione che la presente tesi propone di colmare, come evidenziato dall'ultima riga della tabella.
 
@@ -572,15 +634,15 @@ _scikit-learn_ è stata utilizzata per l'ottimizzazione degli iperparametri (`Ra
 
 === _statsmodels_
 
-_statsmodels_ è stata impiegata per la diagnostica statistica del _walk-forward_: il calcolo e la visualizzazione del correlogramma (`plot_acf`) e il test di Ljung-Box (`acorr_ljungbox`), utilizzati per verificare l'assenza di autocorrelazione residua nelle predizioni del modello (sezione @sec-quant-incertezza).
+_statsmodels_ è stata impiegata per la diagnostica statistica del _walk-forward_: il calcolo e la visualizzazione del correlogramma (`plot_acf`) e il test di Ljung-Box (`acorr_ljungbox`), utilizzati per verificare l'assenza di autocorrelazione residua nelle predizioni del modello (@sec-quant-incertezza).
 
 === XGBoost
 
-*XGBoost* è la libreria che implementa l'algoritmo di classificazione adottato come modello predittivo principale (sezione @sec-metodologia), scelta per l'efficienza computazionale e per i meccanismi di regolarizzazione nativi.
+*XGBoost* è la libreria che implementa l'algoritmo di classificazione adottato come modello predittivo principale (@sec-metodologia), scelta per l'efficienza computazionale e per i meccanismi di regolarizzazione nativi.
 
 === SHAP
 
-La libreria *SHAP* implementa il metodo di interpretabilità omonimo, utilizzato tramite l'_explainer_ specializzato per modelli ad alberi (`TreeExplainer`) per calcolare il contributo di ciascuna _feature_ alle singole predizioni del modello (sezione @sec-interpretabilita).
+La libreria *SHAP* implementa il metodo di interpretabilità omonimo, utilizzato tramite l'_explainer_ specializzato per modelli ad alberi (`TreeExplainer`) per calcolare il contributo di ciascuna _feature_ alle singole predizioni del modello (@sec-interpretabilita).
 
 === _requests_
 
@@ -589,7 +651,7 @@ La libreria _requests_ è stata utilizzata per tutte le chiamate alle *API* este
 
 ==== Arctic Shift
 
-Arctic Shift è un'*API* pubblica non ufficiale che fornisce accesso a un archivio storico di _post_ e commenti Reddit, utilizzata per raccogliere il campione testuale su cui viene poi calcolato il _sentiment_ (metodo `fetch_arctic_shift_feed`, sezione @sec-implementazione). A differenza dell'*API* ufficiale di Reddit, non richiede autenticazione né l'iscrizione a un programma per sviluppatori, e restituisce risultati filtrabili per intervallo temporale e punteggio minimo del _post_.
+Arctic Shift è un'*API* pubblica non ufficiale che fornisce accesso a un archivio storico di _post_ e commenti Reddit, utilizzata per raccogliere il campione testuale su cui viene poi calcolato il _sentiment_ (metodo `fetch_arctic_shift_feed`, @sec-implementazione). A differenza dell'*API* ufficiale di Reddit, non richiede autenticazione né l'iscrizione a un programma per sviluppatori, e restituisce risultati filtrabili per intervallo temporale e punteggio minimo del _post_.
 
 === _yfinance_
 
@@ -597,7 +659,7 @@ _yfinance_ fornisce l'accesso ai dati di mercato storici di Bitcoin (quotazioni 
 
 === _google-genai_
 
-La libreria ufficiale _google-genai_ è stata utilizzata per l'integrazione con il modello linguistico Gemini, impiegato per la classificazione del _sentiment_ dei _post_ raccolti (sezione @sec-implementazione).
+La libreria ufficiale _google-genai_ è stata utilizzata per l'integrazione con il modello linguistico Gemini, impiegato per la classificazione del _sentiment_ dei _post_ raccolti (@sec-implementazione).
 
 == Visualizzazione e grafici
 
@@ -625,7 +687,7 @@ I file *PNG* sono il formato utilizzato per il salvataggio di tutte le visualizz
 
 == Formulazione del problema <sec-formulazione-problema>
 
-Il problema affrontato è di classificazione binaria: dato un insieme di osservazioni settimanali relative al mercato di Bitcoin (*BTC* / *USD*) e a fonti informative correlate elencate precedentemente, si vuole prevedere se il prezzo di chiusura della settimana successiva sarà superiore (_UP_) o inferiore o uguale (_DOWN_) a quello della settimana corrente.
+Il problema affrontato è di classificazione binaria: dato un insieme di osservazioni settimanali relative al mercato di Bitcoin (*BTC* / *USD*) e fonti informative correlate elencate precedentemente, si vuole prevedere se il prezzo di chiusura della settimana successiva sarà superiore (_UP_) o inferiore o uguale (_DOWN_) a quello della settimana corrente.
 
 Questa formulazione riprende l'impostazione di classificazione binaria della direzione di prezzo adottata da diversi lavori esaminati nel capitolo precedente (Hafid [2], Kaur [7], Sattarov [9]), modificandone la granularità temporale da giornaliera/infra-giornaliera a settimanale, per rispondere a tre esigenze:
 - Come si vede da @fig-daily-weekly attenua il rumore che caratterizza i mercati delle criptovalute, dove le oscillazioni di prezzo su orizzonti brevi sono molto frequenti e tendenzialmente imprevedibili.
@@ -677,6 +739,9 @@ Le _feature_ utilizzate dal modello sono organizzate in quattro famiglie omogene
 
 == _Feature_ Tecniche
 
+Le _feature_ tecniche sono derivate esclusivamente dalla serie dei prezzi di chiusura e dal volume di scambio di Bitcoin, senza fare uso di alcuna fonte esterna. Rappresentano indicatori standard di analisi tecnica, scelti per la loro diffusione in letteratura e per la capacità di catturare aspetti complementari del comportamento del prezzo: rendimento, volatilità, momentum e rischio aggiustato per il rendimento. La @tab-featuretech ne riporta l'elenco completo, con una breve motivazione per ciascuna.
+
+
 #figure(
   caption: [_Feature_ tecniche],
   table(
@@ -696,6 +761,8 @@ Le _feature_ utilizzate dal modello sono organizzate in quattro famiglie omogene
 
 == Feature di Sentiment <sec-featuresent>
 
+Le _feature_ di _sentiment_ sintetizzano, su base settimanale, l'esito della classificazione automatica dei _post_ raccolti da Reddit (@sec-implementazione). Oltre al livello medio del _sentiment_, sono incluse misure di polarizzazione, volume di discussione e variazione rispetto al trend recente, per catturare non solo il tono prevalente ma anche la sua dinamica nel tempo. La @tab-featuresent riporta l'elenco completo.
+
 #figure(
   caption: [_Feature_ di _sentiment_],
   table(
@@ -714,6 +781,9 @@ Le _feature_ utilizzate dal modello sono organizzate in quattro famiglie omogene
 
 == _Feature_ di Blockchain o Energetiche
 
+Le _feature_ di _blockchain_ o energetiche derivano dal costo di produzione stimato di Bitcoin e dall'_hash rate_ della rete, motivate dall'evidenza di causalità di lungo periodo discussa nel capitolo di analisi della letteratura (Sapra et al. [3]). Rappresentano un proxy del valore dell'_asset_, complementare alle dinamiche più speculative catturate dalle _feature_ tecniche e di _sentiment_. La @tab-featurebc ne riporta l'elenco.
+
+
 #figure(
   caption: [_Feature_ di _blockchain_ o energetiche],
   table(
@@ -730,6 +800,8 @@ Le _feature_ utilizzate dal modello sono organizzate in quattro famiglie omogene
 
 == _Feature_ di _Sentiment_ del Mercato
 
+Le _feature_ di _sentiment_ del mercato derivano dal _Fear & Greed Index_, un indicatore composito calcolato aggregando più segnali di mercato (volatilità, momentum, volume, dominanza, _sentiment_ dei _social media_) in un unico valore. A differenza del _sentiment_ testuale estratto direttamente dai _post_ Reddit, questo indice cattura una misura di sentiment di mercato più ampia e aggregata, prodotta da una fonte esterna indipendente. La @tab-featurefng ne riporta l'elenco.
+
 #figure(
   caption: [_Feature_ di _sentiment_ del mercato],
   table(
@@ -743,13 +815,13 @@ Le _feature_ utilizzate dal modello sono organizzate in quattro famiglie omogene
   ),
 ) <tab-featurefng>
 
-Il criterio comune a tutte le famiglie, evidente dal confronto delle motivazioni riportate nelle tabelle @tab-featuretech, @tab-featuresent, @tab-featurebc e @tab-featurefng, è la ricerca di complementarità informativa più che di ridondanza: per ciascuna fonte si è privilegiata l'inclusione di misure che catturano aspetti distinti del fenomeno osservato piuttosto che più indicatori sostanzialmente equivalenti, come discusso nella sezione @sec-pruning.
+Il criterio comune a tutte le famiglie, evidente dal confronto delle motivazioni riportate nelle tabelle @tab-featuretech, @tab-featuresent, @tab-featurebc e @tab-featurefng, è la ricerca di complementarità informativa più che di ridondanza: per ciascuna fonte si è privilegiata l'inclusione di misure che catturano aspetti distinti del fenomeno osservato piuttosto che più indicatori sostanzialmente equivalenti, come discusso nella @sec-pruning.
 
 == Selezione e _pruning_ delle _feature_ <sec-pruning>
 
 Data l'ampiezza campionaria contenuta del _dataset_ (dell'ordine di 110-120 osservazioni settimanali) rispetto al numero di _feature_ disponibili, è stata applicata una fase di _pruning_ automatico volta a contenere il rischio di _overfitting_. In questa fase vengono rimosse _feature_ ridondanti dove per ogni coppia di _feature_ con correlazione assoluta superiore a 0.95, viene mantenuta solo una delle due. Infine, le _feature_ costanti su tutto il periodo osservato, poiché non apportano alcuna informazione, vengono scartate.
 
-Un principio metodologico osservato in questa fase è che il _pruning_ delle _feature_ non è mai stato basato sulla correlazione con la variabile _target_ calcolata sull'intero _dataset_. Il problema non risiede nell'uso della correlazione con il _target_ in sé, quanto nel calcolarla su un periodo che include le osservazioni successivamente impiegate come test: utilizzare questa informazione per decidere quali _feature_ includere nel modello equivale a "sbirciare" il risultato prima della validazione (_look-ahead bias_), inficiandone la validità. Un _pruning_ basato sul _target_ sarebbe in linea di principio corretto se ricalcolato di volta in volta utilizzando esclusivamente le osservazioni disponibili in ciascuna finestra di addestramento, secondo lo schema di validazione descritto nella sezione @sec-validazione-wf, questa tesi ha tuttavia preferito un _pruning_ basato esclusivamente su proprietà interne alle _feature_ stesse (correlazione reciproca, varianza), indipendenti dalla variabile _target_, per mantenere la fase di selezione delle _feature_ più semplice e per evitare l'_overhead_ computazionale di un ricalcolo a ogni finestra del _walk-forward_.
+Un principio metodologico osservato in questa fase è che il _pruning_ delle _feature_ non è mai stato basato sulla correlazione con la variabile _target_ calcolata sull'intero _dataset_. Il problema non risiede nell'uso della correlazione con il _target_ in sé, quanto nel calcolarla su un periodo che include le osservazioni successivamente impiegate come test: utilizzare questa informazione per decidere quali _feature_ includere nel modello equivale a "sbirciare" il risultato prima della validazione (_look-ahead bias_), inficiandone la validità. Un _pruning_ basato sul _target_ sarebbe in linea di principio corretto se ricalcolato di volta in volta utilizzando esclusivamente le osservazioni disponibili in ciascuna finestra di addestramento, secondo lo schema di validazione descritto nella @sec-validazione-wf, questa tesi ha tuttavia preferito un _pruning_ basato esclusivamente su proprietà interne alle _feature_ stesse (correlazione reciproca, varianza), indipendenti dalla variabile _target_, per mantenere la fase di selezione delle _feature_ più semplice e per evitare l'_overhead_ computazionale di un ricalcolo a ogni finestra del _walk-forward_.
 
 == Definizione del _target_
 
@@ -785,7 +857,9 @@ Gli iperparametri vengono riottimizzati periodicamente durante questa procedura 
 
 == Quantificazione dell'incertezza statistica <sec-quant-incertezza>
 
-Con poche predizioni disponibili nel _walk-forward_, un singolo numero (es. "l'accuratezza è 0.55") non basta a capire quanto ci si può fidare del risultato. Per questo è stato usato il _bootstrap_ non parametrico [13]: dalle coppie previsione/esito del _walk-forward_ se ne estraggono, con reinserimento, tante quante l'originale, e si ricalcola la metrica. Ripetendo l'operazione 2000 volte si ottiene una distribuzione di valori, da cui si ricava un intervallo di confidenza al 95% (i percentili 2.5 e 97.5 di quella distribuzione).
+Con poche predizioni disponibili nel _walk-forward_, un singolo numero non basta a capire quanto ci si può fidare del risultato. Per questo è stato usato il _bootstrap_ non parametrico [13]: dalle coppie previsione/esito del _walk-forward_ se ne estraggono, con reinserimento, tante quante l'originale, e si ricalcola la metrica. Ripetendo l'operazione 2000 volte si ottiene una distribuzione di valori, da cui si ricava un intervallo di confidenza al 95%.
+
+Rispetto ad alternative parametriche (come il metodo di DeLong per l'*AUC*, o l'intervallo di Wilson per l'_accuracy_), il _bootstrap_ è stato scelto perché applica la stessa procedura a tutte le metriche e ha un costo computazionale trascurabile a questa scala. In cambio, richiede che le osservazioni ricampionate siano indipendenti, assunzione verificata di seguito con il test di Ljung-Box.
 
 Questo tipo di ricampionamento assume che le osservazioni siano indipendenti tra loro. Su dati temporali questo non è scontato: se il modello sbaglia in modo simile per più settimane di fila (ad esempio durante un cambio di regime di mercato), le osservazioni sono correlate, e trattarle come indipendenti porta a un intervallo di confidenza più stretto di quanto dovrebbe essere. Per controllare che questo non fosse un problema, è stata misurata l'autocorrelazione dei residui del _walk-forward_ (differenza tra esito reale e probabilità predetta) con il test di Ljung-Box, a 1, 4 e 8 settimane di distanza: i _p-value_ ottenuti (0.737, 0.659, 0.931) sono tutti ben sopra la soglia di 0.05, quindi non c'è evidenza di questo tipo di correlazione. Il _bootstrap_ semplice è quindi appropriato in questo caso, e l'intervallo di confidenza calcolato è affidabile.
 
@@ -803,6 +877,8 @@ Le prestazioni del modello sono messe a confronto con tre strategie di riferimen
 - _Buy & Hold_: esposizione costante al mercato per l'intero periodo.
 - *MACD* _Crossover_: tecnica classica, utile a verificare che il modello non stia replicando un segnale già catturato da un indicatore elementare.
 - _Random_: strategia casuale.
+
+La strategia simulata nel _backtesting_ è *long/cash*, non *long/short*: quando il modello prevede *UP*, il capitale è investito in Bitcoin e quando prevede *DOWN*, il capitale viene spostato in liquidità, senza mai assumere una posizione ribassista tramite vendita allo scoperto. Questa scelta implica che una previsione *DOWN* corretta permette solo di evitare la perdita corrispondente, non di generarne un guadagno, a differenza di una strategia *long/short* che monetizzerebbe simmetricamente entrambe le direzioni. La scelta di non includere lo _short selling_ è motivata dalla maggiore complessità operativa e di rischio che comporta (margine, costi di prestito del titolo, rischio di perdita teoricamente illimitato), non giustificata in un contesto dove il modello non ha ancora dimostrato un segnale predittivo affidabile (@sec-quant-incertezza).
 
 È stata inoltre condotta una simulazione di _backtesting_, con un capitale iniziale di esempio e un costo di transazione applicato a ogni variazione di posizione, per stimare rendimento cumulato. Questa analisi va interpretata con cautela quando le metriche di classificazione non risultano statisticamente significative: i costi di transazione tendono a erodere ulteriormente un segnale già debole o assente.
 
@@ -1265,6 +1341,15 @@ for _ in range(N_BOOT):
 auc_ci = np.percentile(boot_auc, [2.5, 97.5])
 ```
 
+La verifica dell'indipendenza temporale è implementata tramite il test di Ljung-Box sui residui del _walk-forward_:
+
+```python
+from statsmodels.stats.diagnostic import acorr_ljungbox
+
+residuals = actuals - probabilities
+lb_test = acorr_ljungbox(residuals, lags=[1, 4, 8], return_df=True)
+```
+
 == Interpretabilità
 
 L'analisi *SHAP* è implementata tramite l'_explainer_ specifico per modelli ad alberi, applicato al modello finale addestrato sull'intero _dataset_ disponibile:
@@ -1295,7 +1380,7 @@ Il salvataggio esplicito di ``` feature_names.json``` garantisce che il modello 
 
 = Sperimentazione e risultati <sec-sperimentazione>
 
-Questo capitolo riporta i risultati ottenuti applicando la metodologia descritta nel capitolo 4, sul _dataset_ finale di 107 settimane e 17 _feature_ residue dopo il _pruning_ (sezione @sec-pruning). Coerentemente con l'impostazione dichiarata nell'Introduzione, i risultati sono presentati insieme alla loro significatività statistica, non come sole stime puntuali.
+Questo capitolo riporta i risultati ottenuti applicando la metodologia descritta nel capitolo 4, sul _dataset_ finale di 107 settimane e 17 _feature_ residue dopo il _pruning_ (@sec-pruning). Coerentemente con l'impostazione dichiarata nell'Introduzione, i risultati sono presentati insieme alla loro significatività statistica, non come sole stime puntuali.
 
 == Ottimizzazione degli iperparametri: esito
 
@@ -1311,7 +1396,7 @@ Coerentemente con quanto discusso in Metodologia, questo valore (0.576) non vien
 
 == Validazione _walk-forward_
 
-La procedura di validazione _walk-forward_ (sezione @sec-validazione-wf), con un solo _re-tuning_ eseguito durante l'intero periodo (essendo la soglia minima di 100 osservazioni raggiunta solo verso la fine della finestra), ha prodotto 77 predizioni a partire dalle 107 settimane totali disponibili:
+La procedura di validazione _walk-forward_ (@sec-validazione-wf), con un solo _re-tuning_ eseguito durante l'intero periodo (essendo la soglia minima di 100 osservazioni raggiunta solo verso la fine della finestra), ha prodotto 77 predizioni a partire dalle 107 settimane totali disponibili:
 
 #figure(
   caption: [Metriche di classificazione, validazione _walk-forward_],
@@ -1349,7 +1434,7 @@ Gli intervalli di confidenza _bootstrap_ al 95% (2000 ricampionamenti, N=77) son
   ),
 ) <tab-bootstrap-ci>
 
-Sia l'intervallo di confidenza dell'*AUC* sia quello dell'_accuracy_ includono il valore corrispondente a un classificatore privo di potere predittivo (0.5). Come discusso in Metodologia (sezione @sec-quant-incertezza), questo significa che il risultato osservato non è statisticamente distinguibile dal caso: il valore puntuale sotto 0.5 non costituisce evidenza che il modello performi peggio del caso, così come un valore sopra 0.5 non ne costituirebbe evidenza a favore. Con questa numerosità campionaria, l'errore standard associato a una stima di *AUC* è sufficientemente ampio da rendere entrambe le interpretazioni ugualmente non supportate dai dati.
+Sia l'intervallo di confidenza dell'*AUC* sia quello dell'_accuracy_ includono il valore corrispondente a un classificatore privo di potere predittivo (0.5). Come discusso in Metodologia (@sec-quant-incertezza), questo significa che il risultato osservato non è statisticamente distinguibile dal caso: il valore puntuale sotto 0.5 non costituisce evidenza che il modello performi peggio del caso, così come un valore sopra 0.5 non ne costituirebbe evidenza a favore. Con questa numerosità campionaria, l'errore standard associato a una stima di *AUC* è sufficientemente ampio da rendere entrambe le interpretazioni ugualmente non supportate dai dati.
 
 La verifica dell'indipendenza temporale delle osservazioni, condizione per la validità del _bootstrap_ semplice utilizzato, non ha rilevato autocorrelazione significativa nei residui del _walk-forward_ a nessuno degli orizzonti testati (test di Ljung-Box, _p-value_ pari a 0.737, 0.659 e 0.931 rispettivamente a 1, 4 e 8 settimane di distanza), come mostrato dal correlogramma in @fig-residuals-acf. L'intervallo di confidenza riportato può quindi essere considerato una stima affidabile dell'incertezza.
 
@@ -1359,7 +1444,7 @@ La proporzione di settimane rialziste osservata nel periodo di addestramento ini
 
 == Confronto con le _baseline_
 
-Le prestazioni del modello sono state confrontate con le tre strategie di riferimento descritte in Metodologia (sezione @sec-baseline):
+Le prestazioni del modello sono state confrontate con le tre strategie di riferimento descritte in Metodologia (@sec-baseline):
 
 #figure(
   caption: [Confronto _walk-forward_:  modello vs _baseline_ di riferimento],
@@ -1382,12 +1467,12 @@ Nel periodo di _walk-forward_ considerato, tutte e tre le _baseline_ ottengono u
 La simulazione di _backtesting_ sul periodo di _walk-forward_, con capitale iniziale di 10.000 *USD* e una commissione dello 0.1% per variazione di posizione, ha prodotto i risultati in @tab-backtesting:
 
 #figure(
-  caption: [Risultati del _backtesting_: modello vs _Buy \& Hold_],
-  table(
-    columns: (1.5fr, 1fr, 1fr),
-    align: (left + horizon, right + horizon, right + horizon),
-    fill: unipd-table-fill,
-    table.header([*Metrica*], [*XGBoost*], [*Buy \& Hold*]),
+caption: [Risultati del _backtesting_: modello vs _Buy \& Hold_],
+table(
+columns: (1.5fr, 1fr, 1fr),
+align: (left + horizon, right + horizon, right + horizon),
+fill: unipd-table-fill,
+table.header([*Metrica*], [*XGBoost*], [*Buy \& Hold*]),
     [Rendimento totale], [-22.8%], [-5.2%],
     [Capitale finale], [\$7.720], [\$9.482],
     [Sharpe Ratio], [-0.669], [-0.100],
@@ -1395,7 +1480,7 @@ La simulazione di _backtesting_ sul periodo di _walk-forward_, con capitale iniz
   ),
 ) <tab-backtesting>
 
-con 12 operazioni eseguite complessivamente. Il periodo di _walk-forward_ coincide con una fase di mercato ribassista (entrambe le strategie chiudono in perdita), e la strategia guidata dal modello sottoperforma nettamente il _Buy \& Hold_ su ogni metrica. Questo risultato è coerente con quanto anticipato in Metodologia (sezione @sec-baseline): un segnale privo di potere predittivo dimostrato, unito ai costi di transazione su 12 operazioni, produce una strategia attiva peggiore della semplice esposizione continua al mercato. Il risultato del _backtesting_ non va quindi interpretato come una proprietà intrinsecamente negativa del modello, ma come una diretta conseguenza dell'assenza di segnale già stabilita nella sezione precedente.
+Con 12 operazioni eseguite complessivamente, la strategia guidata dal modello sottoperforma nettamente il _Buy \& Hold_ su ogni metrica, in un periodo di mercato prevalentemente ribassista in cui entrambe le strategie chiudono comunque in perdita. Coerentemente con quanto descritto in Metodologia (@sec-baseline), la strategia simulata è *long/cash*, non *long/short*: il modello, avendo un _recall_ elevato (0.737, visto in @tab-walkforward) e quindi una forte tendenza a prevedere *UP*, resta investito per la maggior parte del periodo, ottenendo un'esposizione al mercato simile a quella del _Buy \& Hold_ ma peggiorata dai costi di transazione delle 12 operazioni e da una tempistica di ingresso/uscita non affidabile. Questo risultato non va quindi interpretato come una proprietà intrinsecamente negativa del modello, ma come una diretta conseguenza dell'assenza di un segnale predittivo dimostrato (@sec-quant-incertezza), combinata con i limiti strutturali di una strategia priva della possibilità di monetizzare le previsioni *DOWN* tramite posizioni corte.
 
 In @fig-backtesting si possono notare gli effetti dei due "metodi" sul capitale iniziale.
 
@@ -1407,7 +1492,7 @@ In @fig-backtesting si possono notare gli effetti dei due "metodi" sul capitale 
 
 == Interpretabilità: _Feature Importance_ e SHAP
 
-La _feature importance_ nativa (_gain-based_) e l'importanza media |*SHAP*| del modello finale (allenato sull'intero _dataset_ disponibile, sezione @sec-interpretabilita) sono riportate in @tab-shap-importance, ordinate per importanza *SHAP* decrescente:
+La _feature importance_ nativa (_gain-based_) e l'importanza media |*SHAP*| del modello finale (allenato sull'intero _dataset_ disponibile, @sec-interpretabilita) sono riportate in @tab-shap-importance, ordinate per importanza *SHAP* decrescente:
 
 #figure(
   image("assets/chart_shap_summary.png", width: 70%),
@@ -1446,13 +1531,13 @@ La _feature importance_ nativa (_gain-based_) e l'importanza media |*SHAP*| del 
   caption: [_Feature Importance_],
 ) <fig-feature-importance>
 
-Le tre _feature_ con maggiore importanza *SHAP* (`cost_per_btc_delta`, `fear_greed_delta`, `volatility_w`) appartengono a tre famiglie diverse (_on-chain_/energetiche, _sentiment_ di mercato, tecniche), non alla famiglia del _sentiment_ testuale estratto da Reddit, che occupa posizioni intermedie. La _feature_ `sentiment_momentum`, introdotta su indicazione del relatore (sezione @sec-featuresent), ha l'importanza più bassa in assoluto in entrambe le classifiche, un ordine di grandezza sotto le altre: un risultato specifico e onesto da riportare, l'idea aveva un fondamento teorico ragionevole ma il modello non se ne avvale in modo apprezzabile nelle sue predizioni.
+Le tre _feature_ con maggiore importanza *SHAP* (`cost_per_btc_delta`, `fear_greed_delta`, `volatility_w`) appartengono a tre famiglie diverse (_on-chain_/energetiche, _sentiment_ di mercato, tecniche), non alla famiglia del _sentiment_ testuale estratto da Reddit, che occupa posizioni intermedie. La _feature_ `sentiment_momentum`, introdotta su indicazione del relatore (@sec-featuresent), ha l'importanza più bassa in assoluto in entrambe le classifiche, un ordine di grandezza sotto le altre: un risultato specifico e onesto da riportare, l'idea aveva un fondamento teorico ragionevole ma il modello non se ne avvale in modo apprezzabile nelle sue predizioni.
 
-Coerentemente con il principio metodologico enunciato nella sezione @sec-interpretabilita, questo _ranking_ descrive esclusivamente su quali _feature_ il modello si appoggia, non se le sue predizioni siano corrette: dato che il modello combinato non è statisticamente distinguibile dal caso (@tab-bootstrap-ci), è plausibile che le _feature_ in cima al _ranking_ spieghino varianza nel campione di addestramento per rumore campionario piuttosto che per una relazione causale reale con la direzione futura del prezzo.
+Coerentemente con il principio metodologico enunciato nella @sec-interpretabilita, questo _ranking_ descrive esclusivamente su quali _feature_ il modello si appoggia, non se le sue predizioni siano corrette: dato che il modello combinato non è statisticamente distinguibile dal caso (@tab-bootstrap-ci), è plausibile che le _feature_ in cima al _ranking_ spieghino varianza nel campione di addestramento per rumore campionario piuttosto che per una relazione causale reale con la direzione futura del prezzo.
 
 == _Ablation_ per gruppi di _feature_
 
-La procedura di _ablation_ (sezione @sec-interpretabilita), che ripete il _walk-forward_ con iperparametri fissi su ciascuna famiglia di _feature_ isolata, produce i risultati in @tab-ablation:
+La procedura di _ablation_ (@sec-interpretabilita), che ripete il _walk-forward_ con iperparametri fissi su ciascuna famiglia di _feature_ isolata, produce i risultati in @tab-ablation:
 
 #figure(
   caption: [_Walk-forward_ per gruppo di _feature_ isolato, con CI95%],
@@ -1487,21 +1572,21 @@ Questa tesi ha affrontato la predizione della direzione settimanale del prezzo d
 
 Il problema di ricerca formulato in Introduzione chiedeva se esistesse un segnale predittivo, per la direzione settimanale del prezzo di Bitcoin, statisticamente distinguibile dal caso. I risultati presentati nel capitolo precedente rispondono a questa domanda in modo negativo: gli intervalli di confidenza _bootstrap_ sulle metriche del modello includono sistematicamente il valore corrispondente a un classificatore privo di potere predittivo, l'_ablation_ per famiglia di _feature_ non isola alcun sottoinsieme con un segnale dimostrabile, e un ampliamento sostanziale del _set_ di _feature_ non produce miglioramenti misurabili.
 
-Questo esito, per quanto in apparente contrasto con alcuni dei lavori esaminati nel capitolo di analisi della letteratura che riportano capacità predittive elevate, non ne è necessariamente in contraddizione: come discusso nella sezione @sec-quant-incertezza, la maggior parte di quei lavori non accompagna i propri risultati con una quantificazione dell'incertezza statistica, rendendo impossibile stabilire se le prestazioni riportate siano distinguibili dal caso con lo stesso rigore applicato in questo lavoro. Il risultato ottenuto è inoltre coerente con l'ipotesi di efficienza informativa dei mercati delle criptovalute su orizzonti temporali brevi, e con i risultati di un precedente lavoro dell'autore condotto con un impianto metodologico differente.
+Questo esito, per quanto in apparente contrasto con alcuni dei lavori esaminati nel capitolo di analisi della letteratura che riportano capacità predittive elevate, non ne è necessariamente in contraddizione: come discusso nella @sec-quant-incertezza, la maggior parte di quei lavori non accompagna i propri risultati con una quantificazione dell'incertezza statistica, rendendo impossibile stabilire se le prestazioni riportate siano distinguibili dal caso con lo stesso rigore applicato in questo lavoro. Il risultato ottenuto è inoltre coerente con l'ipotesi di efficienza informativa dei mercati delle criptovalute su orizzonti temporali brevi, e con i risultati del lavoro di tesi di Margarit [15], condotto sullo stesso progetto con un impianto metodologico differente (VADER e _logistic regression_).
 
 == Contributi metodologici
 
 Indipendentemente dall'esito negativo rispetto al problema di ricerca, questo lavoro fornisce tre contributi che restano validi:
 
 + Una _pipeline_ software modulare e riproducibile per l'integrazione di fonti dati eterogenee (testuali, di mercato, _on-chain_/energetiche, di _sentiment_ aggregato) nella predizione del prezzo di Bitcoin, verificata sistematicamente per l'assenza di _look-ahead bias_ in ogni fase, dalla costruzione delle _feature_ alla selezione del modello.
-+ Una metodologia di validazione temporale che combina _walk-forward_ con _re-tuning_ periodico condizionato e quantificazione _bootstrap_ dell'incertezza, corredata da una verifica esplicita delle assunzioni statistiche sottostanti (indipendenza temporale dei residui, sezione @sec-quant-incertezza), raramente presente nei lavori affini esaminati.
++ Una metodologia di validazione temporale che combina _walk-forward_ con _re-tuning_ periodico condizionato e quantificazione _bootstrap_ dell'incertezza, corredata da una verifica esplicita delle assunzioni statistiche sottostanti (indipendenza temporale dei residui, @sec-quant-incertezza), raramente presente nei lavori affini esaminati.
 + Un'analisi di interpretabilità a doppio livello (_Feature Importance_ nativa e valori *SHAP*), che colma una lacuna comune alla quasi totalità dei lavori confrontati nel capitolo di letteratura, indipendentemente dalla loro complessità architetturale.
 
 == Limiti dello studio
 
 Il limite principale di questo lavoro, discusso più volte nei capitoli precedenti, è l'ampiezza campionaria del _dataset_: circa 107 settimane di osservazioni, un vincolo strutturale legato sia alla cadenza settimanale scelta sia alla disponibilità storica delle fonti dati integrate. Questo limite si traduce in intervalli di confidenza ampi per qualunque metrica calcolata, che rendono difficile distinguere un'assenza genuina di segnale da un segnale debole ma reale, non rilevabile con la potenza statistica disponibile.
 
-Un secondo limite riguarda la scelta di accoppiare la frequenza di campionamento dei dati all'orizzonte dell'obiettivo di predizione (sezione @sec-formulazione-problema): sebbene motivata da ragioni pratiche legate alla scarsità del campione di _sentiment_ e alla complessità di integrazione di fonti a frequenze eterogenee, questa scelta non è stata confrontata empiricamente con un'alternativa a granularità disaccoppiata, che potrebbe preservare informazione intra-settimanale attualmente scartata dal ricampionamento.
+Un secondo limite riguarda la scelta di accoppiare la frequenza di campionamento dei dati all'orizzonte dell'obiettivo di predizione (@sec-formulazione-problema): sebbene motivata da ragioni pratiche legate alla scarsità del campione di _sentiment_ e alla complessità di integrazione di fonti a frequenze eterogenee, questa scelta non è stata confrontata empiricamente con un'alternativa a granularità disaccoppiata, che potrebbe preservare informazione intra-settimanale attualmente scartata dal ricampionamento.
 
 Un terzo limite riguarda la generalizzabilità temporale dei risultati: il periodo di _walk-forward_ analizzato copre un intervallo relativamente contenuto della storia di Bitcoin, e i risultati potrebbero non essere rappresentativi di regimi di mercato non osservati in questo campione.
 
@@ -1585,6 +1670,8 @@ _Grazie._
 
 - [16] XGBoost, "XGBoost Documentation", xgboost.readthedocs.io
 
+- [17] A. Margarit, "Sviluppo di un sistema predittivo dell'andamento del prezzo di Bitcoin mediante Natural Language Processing, Sentiment Analysis e modelli di Machine Learning", Tesi di Laurea Triennale, Università degli Studi di Padova, A.A. 2024-2025.
+
 #pagebreak()
 
 = Glossario
@@ -1651,6 +1738,8 @@ _Grazie._
 
 - *HTML* <gloss-html>: _HyperText Markup Language._ Linguaggio di markup standard per la struttura dei contenuti sul web.
 
+- *Intervallo di Wilson* <gloss-wilson>: Intervallo di confidenza per una proporzione (ad esempio l'_accuracy_ di un classificatore), alternativo al più comune intervallo di Wald. A differenza di quest'ultimo, l'intervallo di Wilson non può eccedere i limiti naturali di una proporzione (0 e 1) e mantiene una copertura più affidabile anche su campioni piccoli o con proporzioni vicine agli estremi.
+
 - *JSON* <gloss-json>: _JavaScript Object Notation._ Formato testuale leggero per lo scambio di dati strutturati, ampiamente utilizzato nelle *API* web.
 
 - *KNN* <gloss-knn>: _K-Nearest Neighbors._ Algoritmo di classificazione (o regressione) che assegna a una nuova osservazione la classe più frequente tra i suoi $k$ vicini più prossimi nello spazio delle _feature_.
@@ -1659,13 +1748,15 @@ _Grazie._
 
 - *_Leakage_ (_look-ahead bias_)* <gloss-leakage>: Introduzione, involontaria o implicita, di informazione non disponibile al momento della predizione all'interno del processo di addestramento o validazione di un modello, che porta a una sovrastima delle sue reali capacità predittive.
 
-- *Ljung-Box (test di)* <gloss-ljungbox>: Test statistico che verifica congiuntamente se le autocorrelazioni di una serie temporale fino a un certo numero di ritardi (_lag_) sono, nel complesso, significativamente diverse da zero.
+- *Test di Ljung-Box* <gloss-ljungbox>: Test statistico che verifica congiuntamente se le autocorrelazioni di una serie temporale fino a un certo numero di ritardi (_lag_) sono, nel complesso, significativamente diverse da zero.
 
 - *LLM* <gloss-llm>: _Large Language Model._ Modello linguistico di grandi dimensioni, addestrato su ampi corpus testuali, in grado di comprendere e generare testo in linguaggio naturale.
 
 - *LSTM* <gloss-lstm>: _Long Short-Term Memory._ Tipologia di rete neurale ricorrente progettata per apprendere dipendenze a lungo termine in dati sequenziali, mitigando il problema della scomparsa del gradiente.
 
 - *MACD* <gloss-macd>: _Moving Average Convergence Divergence._ Indicatore di analisi tecnica che misura la relazione tra due medie mobili esponenziali del prezzo a periodi diversi. La differenza tra le due medie costituisce la linea *MACD*. Una terza media mobile di questa differenza costituisce la linea di segnale. L'istogramma *MACD*, utilizzato come _feature_ in questa tesi, è la differenza tra la linea *MACD* e la linea di segnale, e ne cattura i cambi di _momentum_.
+
+- *Metodo di DeLong* <gloss-delong>: Procedura statistica che calcola in forma chiusa (senza ricampionamento) la varianza dell'*AUC*, basandosi sulla teoria asintotica degli U-statistics. Consente di stimare un intervallo di confidenza per l'*AUC* più rapidamente del _bootstrap_, ma assume la normalità asintotica dello stimatore, un'approssimazione meno affidabile su campioni di piccole dimensioni.
 
 - *_Mining_* <gloss-mining>: Processo attraverso cui i nodi di una rete _blockchain_ basata su _proof-of-work_ (come Bitcoin) validano le transazioni e generano nuovi blocchi, ricevendo in cambio una ricompensa.
 
@@ -1712,6 +1803,8 @@ _Grazie._
 - *_Target_* <gloss-target>: Variabile che un modello di _machine learning_ supervisionato è addestrato a predire.
 
 - *TextBlob* <gloss-textblob>: Libreria Python per l'elaborazione del linguaggio naturale, che include un modulo di _sentiment analysis_ basato su un dizionario lessicale.
+
+- *Test di Ljung-Box* <gloss-ljungbox>: Test statistico che verifica congiuntamente se le autocorrelazioni di una serie temporale fino a un certo numero di ritardi (_lag_) sono, nel complesso, significativamente diverse da zero.
 
 - *TF-IDF* <gloss-tfidf>: _Term Frequency-Inverse Document Frequency._ Misura statistica che valuta l'importanza di un termine all'interno di un documento rispetto a una collezione di documenti, bilanciando la frequenza del termine nel documento e la sua rarità nella collezione.
 
