@@ -4,11 +4,11 @@
     radius: 10pt,
     width: 100%,
     fill: luma(245),
-    text(size: 9pt, it)
+    text(size: 8pt, it)
   )
 )
 
-#show table: set text(size: 11pt)
+#show table: set text(size: 10pt)
 
 #set text(lang: "it")
 #set heading(numbering: none)
@@ -16,7 +16,7 @@
 #set page(numbering: none)
 #set figure(numbering: "1")
 #show link: set text(fill: blue)
-#set text(size: 14pt)
+#set text(size: 12pt)
 #set par(justify: true)
 
 #let unipd-red-dark   = rgb("#dd2d4a")  // intestazione tabella (testo bianco sopra)
@@ -131,7 +131,7 @@
     v(0.3cm)
   }
   text(size: 20pt, weight: "bold")[#it.body]
-  v(1cm)
+  v(0.5cm)
 }
 
 = Sommario
@@ -573,7 +573,7 @@ La @tab-confronto-predittivi riassume e mette a confronto i principali _paper_ c
     [Nessuno\ (correlaz.)],
     [No],
     [No],
-    [Manogna [5]], [*BTC*], [NLP classico\ (non specif.)], [Probabilm.\ *TF-IDF*], [*LSTM*,\ *BiGRU*], [No], [No],
+    [Manogna [5]], [*BTC*], [N/A], [*LSTM*,\ *BiGRU*], [No], [No],
     [Xiao [1]], [Azioni], [*LLM* multi-agente\ (*GPT*-class)], [*LLM*], [Agente *LLM*\ (testo libero)], [Sì], [No],
     table.cell(fill: unipd-red-dark)[*Questa\ tesi*],
     table.cell(fill: unipd-red-dark)[*BTC*],
@@ -692,7 +692,7 @@ Il problema affrontato è di classificazione binaria: dato un insieme di osserva
 Questa formulazione riprende l'impostazione di classificazione binaria della direzione di prezzo adottata da diversi lavori esaminati nel capitolo precedente (Hafid [2], Kaur [7], Sattarov [9]), modificandone la granularità temporale da giornaliera/infra-giornaliera a settimanale, per rispondere a tre esigenze:
 - Come si vede da @fig-daily-weekly attenua il rumore che caratterizza i mercati delle criptovalute, dove le oscillazioni di prezzo su orizzonti brevi sono molto frequenti e tendenzialmente imprevedibili.
 #figure(
-image("assets/daily_weekly.png", width: 90%),
+image("assets/daily_weekly.png", width: 80%),
 caption: [Confronto granularità giornaliera e settimanale],
 ) <fig-daily-weekly>
 - Rende compatibili fonti dati con cadenze di aggiornamento eterogenee (dati di mercato continui, indicatori di _blockchain_ aggiornati a intervalli variabili, un campione di _post social_ non uniformemente distribuito nel tempo).
@@ -1485,17 +1485,18 @@ Con 12 operazioni eseguite complessivamente, la strategia guidata dal modello so
 In @fig-backtesting si possono notare gli effetti dei due "metodi" sul capitale iniziale.
 
 #figure(
-  image("assets/backtesting.png", width: 80%),
+  image("assets/backtesting.png", width: 90%),
   caption: [Evoluzione del capitale: modello vs _Buy \& Hold_],
 ) <fig-backtesting>
 
+#pagebreak()
 
 == Interpretabilità: _Feature Importance_ e SHAP
 
 La _feature importance_ nativa (_gain-based_) e l'importanza media |*SHAP*| del modello finale (allenato sull'intero _dataset_ disponibile, @sec-interpretabilita) sono riportate in @tab-shap-importance, ordinate per importanza *SHAP* decrescente:
 
 #figure(
-  image("assets/chart_shap_summary.png", width: 70%),
+  image("assets/chart_shap_summary.png", width: 90%),
   caption: [Distribuzione SHAP per _feature_ (_summary plot_).],
 ) <fig-shap-summary>
 
@@ -1748,8 +1749,6 @@ _Grazie._
 
 - *_Leakage_ (_look-ahead bias_)* <gloss-leakage>: Introduzione, involontaria o implicita, di informazione non disponibile al momento della predizione all'interno del processo di addestramento o validazione di un modello, che porta a una sovrastima delle sue reali capacità predittive.
 
-- *Test di Ljung-Box* <gloss-ljungbox>: Test statistico che verifica congiuntamente se le autocorrelazioni di una serie temporale fino a un certo numero di ritardi (_lag_) sono, nel complesso, significativamente diverse da zero.
-
 - *LLM* <gloss-llm>: _Large Language Model._ Modello linguistico di grandi dimensioni, addestrato su ampi corpus testuali, in grado di comprendere e generare testo in linguaggio naturale.
 
 - *LSTM* <gloss-lstm>: _Long Short-Term Memory._ Tipologia di rete neurale ricorrente progettata per apprendere dipendenze a lungo termine in dati sequenziali, mitigando il problema della scomparsa del gradiente.
@@ -1805,8 +1804,6 @@ _Grazie._
 - *TextBlob* <gloss-textblob>: Libreria Python per l'elaborazione del linguaggio naturale, che include un modulo di _sentiment analysis_ basato su un dizionario lessicale.
 
 - *Test di Ljung-Box* <gloss-ljungbox>: Test statistico che verifica congiuntamente se le autocorrelazioni di una serie temporale fino a un certo numero di ritardi (_lag_) sono, nel complesso, significativamente diverse da zero.
-
-- *TF-IDF* <gloss-tfidf>: _Term Frequency-Inverse Document Frequency._ Misura statistica che valuta l'importanza di un termine all'interno di un documento rispetto a una collezione di documenti, bilanciando la frequenza del termine nel documento e la sua rarità nella collezione.
 
 - *TreeExplainer* <gloss-treeexplainer>: Implementazione del metodo *SHAP* ottimizzata per modelli ad alberi (come *XGBoost*), in grado di calcolare valori *SHAP* esatti anziché approssimati.
 
