@@ -186,7 +186,7 @@ I successivi capitoli del documento sono organizzati nel seguente modo:
 - *@sec-metodologia: Metodologia*: descrive le scelte progettuali e il loro razionale, dalla formulazione del problema alla validazione statistica dei risultati, indipendentemente dai dettagli implementativi.
 - *@sec-implementazione: Implementazione*: descrive la traduzione in codice delle scelte metodologiche, per fase della pipeline (raccolta dati, feature engineering, addestramento, validazione, interpretabilità).
 - *@sec-sperimentazione: Sperimentazione e risultati*: riporta i risultati ottenuti applicando la metodologia, corredati dalla relativa quantificazione dell'incertezza statistica.
-- *@sec-conclusioni: Conclusioni*: risponde al problema di ricerca formulato in Introduzione, discute i contributi metodologici, i limiti dello studio e le direttrici di sviluppo futuro.
+- *@sec-conclusioni: Conclusioni*: risponde al problema di ricerca formulato in Introduzione, discute i contributi metodologici, i limiti dello studio e possibili sviluppi futuri.
 
 
 #pagebreak()
@@ -573,7 +573,7 @@ La @tab-confronto-predittivi riassume e mette a confronto i principali _paper_ c
     [Nessuno\ (correlaz.)],
     [No],
     [No],
-    [Manogna [5]], [*BTC*], [N/A], [*LSTM*,\ *BiGRU*], [No], [No],
+    [Manogna [5]], [*BTC*],[N/A] ,[N/A], [*LSTM*,\ *BiGRU*], [No], [No],
     [Xiao [1]], [Azioni], [*LLM* multi-agente\ (*GPT*-class)], [*LLM*], [Agente *LLM*\ (testo libero)], [Sì], [No],
     table.cell(fill: unipd-red-dark)[*Questa\ tesi*],
     table.cell(fill: unipd-red-dark)[*BTC*],
@@ -1402,7 +1402,7 @@ La procedura di validazione _walk-forward_ (@sec-validazione-wf), con un solo _r
   caption: [Metriche di classificazione, validazione _walk-forward_],
   table(
     columns: (1fr, 1fr),
-    align: (left + horizon, right + horizon),
+    align: (left + horizon),
     fill: unipd-table-fill,
     table.header([*Metrica*], [*Valore*]),
     [Accuracy], [0.442],
@@ -1425,7 +1425,7 @@ Gli intervalli di confidenza _bootstrap_ al 95% (2000 ricampionamenti, N=77) son
   caption: [CI di _bootstrap_ al 95% su _walk-forward metrics_],
   table(
     columns: (1fr, 1fr, 1.4fr),
-    align: (left + horizon, right + horizon, left + horizon),
+    align: (left + horizon, left + horizon, left + horizon),
     fill: unipd-table-fill,
     table.header([*Metrica*], [*Valore osservato*], [*CI95%*]),
     [ROC-AUC], [0.435], [\[0.310, 0.562\]: include 0.5],
@@ -1450,7 +1450,7 @@ Le prestazioni del modello sono state confrontate con le tre strategie di riferi
   caption: [Confronto _walk-forward_:  modello vs _baseline_ di riferimento],
   table(
     columns: (1.3fr, 1fr, 1fr, 1fr),
-    align: (left + horizon, right + horizon, right + horizon, right + horizon),
+    align: (left + horizon),
     fill: unipd-table-fill,
     table.header([*Strategia*], [*Accuracy*], [*Precision*], [*ROC-AUC*]),
     [*XGBoost*], [0.442], [0.459], [0.435],
@@ -1470,7 +1470,7 @@ La simulazione di _backtesting_ sul periodo di _walk-forward_, con capitale iniz
 caption: [Risultati del _backtesting_: modello vs _Buy \& Hold_],
 table(
 columns: (1.5fr, 1fr, 1fr),
-align: (left + horizon, right + horizon, right + horizon),
+align: (left + horizon),
 fill: unipd-table-fill,
 table.header([*Metrica*], [*XGBoost*], [*Buy \& Hold*]),
     [Rendimento totale], [-22.8%], [-5.2%],
@@ -1504,7 +1504,7 @@ La _feature importance_ nativa (_gain-based_) e l'importanza media |*SHAP*| del 
   caption: [_Feature Importance_ e media \|SHAP\| del modello],
   table(
     columns: (1.6fr, 1fr, 1fr),
-    align: (left + horizon, right + horizon, right + horizon),
+    align: (left + horizon),
     fill: unipd-table-fill,
     table.header([*Feature*], [*Gain*], [*\|SHAP\| media*]),
     [`cost_per_btc_delta`], [0.0759], [0.1869],
@@ -1544,7 +1544,7 @@ La procedura di _ablation_ (@sec-interpretabilita), che ripete il _walk-forward_
   caption: [_Walk-forward_ per gruppo di _feature_ isolato, con CI95%],
   table(
     columns: (1.4fr, 1fr, 1fr, 1.6fr),
-    align: (left + horizon, right + horizon, right + horizon, left + horizon),
+    align: (left + horizon),
     fill: unipd-table-fill,
     table.header([*Gruppo*], [*AUC*], [*Accuracy*], [*CI95% AUC*]),
     [Tecniche], [0.358], [0.442], [\[0.228, 0.491\]: esclude 0.5],
